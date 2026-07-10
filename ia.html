@@ -216,6 +216,8 @@
 
     srcData = ctx.getImageData(0,0,W,H);
     mask = new Uint8Array(W*H);
+    tool='wand'; setTool('wand');
+    tol = 54; $('#tol').value = 54; $('#tolVal').textContent = 54;
     setStatus('Toca el toldo para empezar.'); setBadge('<b>Paso 1.</b> Toca el toldo en la foto');
   }
 
@@ -229,30 +231,36 @@
     ctx.drawImage(img,0,0,W,H);
     srcData = ctx.getImageData(0,0,W,H);
     mask = new Uint8Array(W*H);
-    setStatus('Toca el toldo en tu foto.'); setBadge('<b>Paso 1.</b> Toca el toldo en la foto');
+    tool='wand'; setTool('wand');
+    tol = 38; $('#tol').value = 38; $('#tolVal').textContent = 38;
+    setStatus('Toca el toldo. Si la selección se <b>desborda</b>, baja la Sensibilidad; si falta zona, súbela o pinta con «Añadir».');
+    setBadge('<b>Paso 1.</b> Toca el toldo en la foto');
   }
 
   // ---------- flood fill (magic wand) ----------
-  function floodFill(sx, sy){
+  // Rellena en 'target' la región contigua al punto sembrado dentro de tolerancia. Devuelve nº de píxeles.
+  function floodFill(target, sx, sy){
     const d = srcData.data;
     const idx0 = (sy*W+sx)*4;
     const sr=d[idx0], sg=d[idx0+1], sb=d[idx0+2];
     const t2 = tol*tol*3;
     const stack = [sy*W+sx];
     const seen = new Uint8Array(W*H);
+    let count=0;
     while(stack.length){
       const p = stack.pop();
       if(seen[p]) continue; seen[p]=1;
       const i = p*4;
       const dr=d[i]-sr, dg=d[i+1]-sg, db=d[i+2]-sb;
       if(dr*dr+dg*dg+db*db > t2) continue;
-      mask[p]=255;
+      target[p]=255; count++;
       const x=p%W, y=(p/W)|0;
       if(x>0) stack.push(p-1);
       if(x<W-1) stack.push(p+1);
       if(y>0) stack.push(p-W);
       if(y<H-1) stack.push(p+W);
     }
+    return count;
   }
 
   function brushAt(px,py,val){
@@ -332,10 +340,28 @@
     cv.setPointerCapture(e.pointerId);
     const [px,py]=toPix(e);
     if(tool==='wand'){
-      floodFill(px,py);
-      const any = mask.some(v=>v);
-      setBadge(any?'<b>Paso 2.</b> Elige un tejido a la derecha →':'Prueba a subir la sensibilidad y toca de nuevo');
-      setStatus(any?'Toldo seleccionado. Cambia de tejido y afínalo con Añadir / Quitar.':'No se seleccionó nada — sube la sensibilidad.');
+      // Auto-adaptación: si el toque se desborda (fondo de color parecido),
+      // reintenta con menos sensibilidad hasta lograr una selección razonable.
+      const savedTol = tol;
+      let applied=false, usedCnt=0;
+      const tries = [tol, Math.round(tol*0.6), Math.round(tol*0.38), 16];
+      for(const tt of tries){
+        tol = tt;
+        const temp = new Uint8Array(W*H);
+        const cnt = floodFill(temp, px, py);
+        if(cnt/(W*H) <= 0.45){ mask = temp; applied=true; usedCnt=cnt; break; }
+      }
+      tol = savedTol;
+      if(!applied){
+        setBadge('Colores muy parecidos — pinta el toldo con «Añadir»');
+        setStatus('El toldo y el fondo son casi del mismo color. Pinta el toldo con «Añadir» para seleccionarlo a mano.');
+      } else if(usedCnt < W*H*0.02){
+        setBadge('Selección parcial — complétala con «Añadir»');
+        setStatus('El toque cogió una parte. Complétala pintando con «Añadir», o sube la <b>Sensibilidad</b>.');
+      } else {
+        setBadge('<b>Paso 2.</b> Elige un tejido a la derecha →');
+        setStatus('Toldo seleccionado. Afínalo con «Añadir» / «Quitar» y prueba tejidos.');
+      }
     } else {
       painting=true; brushAt(px,py, tool==='add'?255:0);
     }
@@ -373,11 +399,12 @@
   });
   document.querySelector('.swatch[data-name="Clásica Roja"]').classList.add('on');
 
-  document.querySelectorAll('button[data-tool]').forEach(b=>b.addEventListener('click',()=>{
-    document.querySelectorAll('button[data-tool]').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on'); tool=b.dataset.tool;
-    setBadge(tool==='wand'?'Toca el toldo':(tool==='add'?'Pinta para <b>añadir</b> a la selección':'Pinta para <b>quitar</b> de la selección'));
-  }));
+  function setTool(t){
+    tool=t;
+    document.querySelectorAll('button[data-tool]').forEach(x=>x.classList.toggle('on',x.dataset.tool===t));
+    setBadge(t==='wand'?'Toca el toldo':(t==='add'?'Pinta por encima del toldo para <b>añadir</b>':'Pinta para <b>quitar</b> de la selección'));
+  }
+  document.querySelectorAll('button[data-tool]').forEach(b=>b.addEventListener('click',()=>setTool(b.dataset.tool)));
   $('#tol').addEventListener('input',e=>{ tol=+e.target.value; $('#tolVal').textContent=tol; });
   $('#ang').addEventListener('input',e=>{ angle=+e.target.value; $('#angVal').textContent=angle+'°'; render(); });
   $('#scale').addEventListener('input',e=>{ stripeScale=+e.target.value/100; $('#scaleVal').textContent=e.target.value+'%'; render(); });
@@ -406,8 +433,6 @@
   function setBadge(t){ $('#badge').innerHTML=t; }
 
   // expose for testing
-  window.__tap=(x,y)=>{ floodFill(x,y); render(); return mask.reduce((a,v)=>a+(v?1:0),0); };
-  window.__pickFabric=(name)=>{ document.querySelector(`.swatch[data-name="${name}"]`).click(); };
 
   // init
   drawSample(); render();
