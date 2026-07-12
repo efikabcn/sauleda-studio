@@ -1,0 +1,484 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sauleda Studio — Presupuestador (prototipo)</title>
+<style>
+  :root{
+    --red:#C8102E; --red-ink:#A50D26; --ink:#2C2C2C; --muted:#7A7A7A; --line:#DDDDDD;
+    --ground:#FFFFFF; --panel:#F5F5F5; --panel2:#FAFAFA; --chip-bg:#FBEAED; --ok:#2E7D32;
+    --shadow:0 10px 30px rgba(44,44,44,.10);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{--red:#E23A54;--red-ink:#F06378;--ink:#F0EEEC;--muted:#A5A19D;--line:#3A3A3E;--ground:#1B1B1E;--panel:#242428;--panel2:#2A2A2F;--chip-bg:#3A2226;--ok:#67B26C;--shadow:0 10px 30px rgba(0,0,0,.45);}
+  }
+  :root[data-theme="light"]{--red:#C8102E;--red-ink:#A50D26;--ink:#2C2C2C;--muted:#7A7A7A;--line:#DDDDDD;--ground:#FFFFFF;--panel:#F5F5F5;--panel2:#FAFAFA;--chip-bg:#FBEAED;--ok:#2E7D32;}
+  :root[data-theme="dark"]{--red:#E23A54;--red-ink:#F06378;--ink:#F0EEEC;--muted:#A5A19D;--line:#3A3A3E;--ground:#1B1B1E;--panel:#242428;--panel2:#2A2A2F;--chip-bg:#3A2226;--ok:#67B26C;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:Calibri,'Segoe UI',-apple-system,'Helvetica Neue',sans-serif;font-size:16px;line-height:1.5}
+  .wrap{max-width:1000px;margin:0 auto;padding:28px 20px 60px}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+  h1{font-family:'Arial Black','Archivo Black',Arial,sans-serif;font-size:clamp(26px,4.5vw,40px);margin:6px 0 4px;color:var(--red);letter-spacing:-.01em;text-wrap:balance}
+  .sub{color:var(--muted);max-width:64ch;margin:0 0 10px}
+  .chip{display:inline-block;background:var(--chip-bg);color:var(--red);border:1px solid var(--red);border-radius:999px;padding:2px 12px;font-size:12px;font-weight:700;letter-spacing:.06em}
+  /* phone frame */
+  .phone{max-width:430px;margin:22px auto 0;border:1px solid var(--line);border-radius:26px;overflow:hidden;box-shadow:var(--shadow);background:var(--ground)}
+  .phone-top{display:flex;align-items:center;justify-content:center;gap:8px;padding:8px;background:var(--panel);border-bottom:1px solid var(--line);position:relative}
+  .phone-top .cam{width:8px;height:8px;border-radius:50%;background:var(--line)}
+  .phone-top .brand{position:absolute;left:16px;font-size:12px;font-weight:700;color:var(--red);letter-spacing:.02em}
+  .screen{padding:0}
+  /* stepper */
+  .stepper{display:flex;gap:0;padding:12px 14px 0;background:var(--ground)}
+  .stepper .st{flex:1;text-align:center;font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--muted);padding-bottom:10px;border-bottom:3px solid var(--line);cursor:default;text-transform:uppercase}
+  .stepper .st.done{color:var(--ink);border-color:var(--red);cursor:pointer}
+  .stepper .st.on{color:var(--red);border-color:var(--red)}
+  .body{padding:16px 16px 6px;min-height:340px}
+  .step{display:none}
+  .step.on{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  h2{font-family:'Arial Black',Arial,sans-serif;font-size:19px;margin:2px 0 4px;color:var(--ink)}
+  .lead{color:var(--muted);font-size:14px;margin:0 0 14px}
+  /* product tiles */
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tile{border:1.5px solid var(--line);border-radius:12px;padding:14px 12px;cursor:pointer;background:var(--panel2);text-align:left;font:inherit;color:var(--ink)}
+  .tile.on{border-color:var(--red);background:var(--chip-bg)}
+  .tile[disabled]{opacity:.5;cursor:not-allowed}
+  .tile .em{font-size:24px;display:block;margin-bottom:6px}
+  .tile .t{font-weight:700;font-size:15px}
+  .tile .d{font-size:12px;color:var(--muted)}
+  .soon{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 5px;margin-left:4px}
+  /* diagram */
+  .diagram{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:6px;margin-bottom:14px}
+  .diagram svg{display:block;width:100%;height:auto}
+  .dim{stroke:var(--muted);stroke-width:2;fill:none}
+  .dim.hot{stroke:var(--red);stroke-width:3}
+  .dimlab{fill:var(--muted);font:600 13px Calibri,sans-serif}
+  .dimlab.hot{fill:var(--red);font-weight:700}
+  /* fields */
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:13px;font-weight:700;margin-bottom:3px}
+  .field .in{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:9px;overflow:hidden;background:var(--ground)}
+  .field .in.focus{border-color:var(--red)}
+  .field input{flex:1;border:none;background:transparent;color:var(--ink);font:inherit;font-size:16px;padding:9px 11px;min-width:0}
+  .field input:focus{outline:none}
+  .field .unit{padding:0 11px;color:var(--muted);font-size:14px;border-left:1px solid var(--line)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .check{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1.5px solid var(--line);border-radius:9px;margin-bottom:8px;cursor:pointer;font-size:14px;background:var(--ground)}
+  .check input{width:18px;height:18px;accent-color:var(--red)}
+  .chkgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .obs-h{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:12px 0 6px}
+  /* swatches */
+  .swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+  .swatch{aspect-ratio:1;border-radius:8px;border:2px solid var(--line);cursor:pointer;padding:0;position:relative}
+  .swatch.on{border-color:var(--red);box-shadow:0 0 0 2px var(--chip-bg)}
+  .swatch .nm{position:absolute;left:0;right:0;bottom:0;font-size:9px;background:rgba(0,0,0,.5);color:#fff;padding:1px 2px;border-radius:0 0 6px 6px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fabmeta{margin-top:10px;font-size:13px;color:var(--muted)}
+  .fabmeta b{color:var(--ink)}
+  /* quote */
+  #quote{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .q-head{background:var(--red);color:#fff;padding:14px 16px}
+  .q-head .qt{font-family:'Arial Black',Arial;font-size:18px}
+  .q-head .qs{font-size:12px;opacity:.9}
+  .q-body{padding:14px 16px}
+  .q-row{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .q-row .k{color:var(--muted)}
+  .q-row .v{font-weight:700;font-variant-numeric:tabular-nums}
+  .q-sec{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:12px 0 4px}
+  .q-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:10px;border-top:2px solid var(--ink)}
+  .q-total .tl{font-weight:700}
+  .q-total .tv{font-family:'Arial Black',Arial;font-size:24px;color:var(--red)}
+  .q-note{font-size:12px;color:var(--muted);margin-top:10px;padding-top:8px;border-top:1px solid var(--line)}
+  .q-note.ok{color:var(--ok)}
+  .badge-merma{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:999px}
+  /* nav */
+  .nav{display:flex;gap:10px;padding:12px 16px 18px;background:var(--ground)}
+  .btn{flex:1;padding:12px;border:none;border-radius:10px;cursor:pointer;font:inherit;font-weight:700;font-size:15px}
+  .btn.primary{background:var(--red);color:#fff}
+  .btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);flex:0 0 auto;padding:12px 16px}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn.primary.small{flex:0 0 auto}
+  button:focus-visible,.tile:focus-visible,.swatch:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+  .foot{margin-top:24px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:13.5px;max-width:78ch}
+  .foot b{color:var(--ink)}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ok);color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s}
+  .toast.show{opacity:1}
+  @media print{
+    body *{visibility:hidden}
+    #quote, #quote *{visibility:visible}
+    #quote{position:absolute;left:0;top:0;width:100%;border:none}
+    .no-print{display:none}
+  }
+</style>
+
+<div class="wrap">
+  <div class="kicker">Sauleda Studio · Prototipo · Fase 2</div>
+  <h1>Presupuestador con medición guiada</h1>
+  <p class="sub">La herramienta de bolsillo del comercial: mide en la visita con ayuda, calcula el <b>tejido exacto</b> según el catálogo Sauleda y entrega el <b>presupuesto en el momento</b>. Ataca los tres dolores: presupuesto lento, error de medida y cálculo de tela.</p>
+  <span class="chip">PROTOTIPO · CÁLCULO ESTIMADO</span>
+
+  <div class="phone">
+    <div class="phone-top"><span class="brand">SAULEDA</span><span class="cam"></span></div>
+    <div class="screen">
+      <div class="stepper" id="stepper">
+        <div class="st on" data-s="0">1 · Producto</div>
+        <div class="st" data-s="1">2 · Medidas</div>
+        <div class="st" data-s="2">3 · Tejido</div>
+        <div class="st" data-s="3">4 · Presupuesto</div>
+      </div>
+
+      <div class="body">
+        <!-- STEP 0 · PRODUCTO -->
+        <div class="step on" id="s0">
+          <h2>¿Qué vas a presupuestar?</h2>
+          <p class="lead">Elige el tipo de trabajo. La app adapta las medidas y el cálculo de tejido a cada producto.</p>
+          <div class="tiles" id="tiles"></div>
+        </div>
+
+        <!-- STEP 1 · MEDIDAS -->
+        <div class="step" id="s1">
+          <h2 id="mTitle">Medidas</h2>
+          <p class="lead">Toca cada campo y verás en el dibujo qué mides. En verde, medidas típicas para orientarte.</p>
+          <div class="diagram" id="diagram"></div>
+          <div id="fields"></div>
+          <div id="obstacles"></div>
+        </div>
+
+        <!-- STEP 2 · TEJIDO -->
+        <div class="step" id="s2">
+          <h2>Tejido Sauleda</h2>
+          <p class="lead">El precio y el consumo se calculan con el <b>ancho de bobina real</b> y la dirección del dibujo de cada referencia.</p>
+          <div class="swatches" id="swatches"></div>
+          <div class="fabmeta" id="fabmeta"></div>
+        </div>
+
+        <!-- STEP 3 · PRESUPUESTO -->
+        <div class="step" id="s3">
+          <h2>Presupuesto</h2>
+          <div class="grid2" style="margin-bottom:12px">
+            <div class="field"><label>Cliente</label><div class="in"><input id="cliNombre" placeholder="Nombre" value=""></div></div>
+            <div class="field"><label>Población</label><div class="in"><input id="cliPob" placeholder="Población" value=""></div></div>
+          </div>
+          <div id="quote"></div>
+          <p class="q-note ok" style="padding:0 2px">Este cálculo de consumo y merma es lo que ningún visualizador de la competencia ofrece: va ligado al catálogo real de Sauleda.</p>
+        </div>
+      </div>
+
+      <div class="nav no-print">
+        <button class="btn ghost" id="btnBack" style="display:none">Atrás</button>
+        <button class="btn primary" id="btnNext" disabled>Continuar</button>
+        <button class="btn primary small" id="btnPdf" style="display:none">Descargar PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot"><b>Cómo leer este prototipo:</b> los precios (€/ml de tejido, confección, estructura) son valores de ejemplo para la demo — en producción se conectan a la tarifa real de Sauleda y del confeccionista. Lo que sí es real es la <b>lógica de cálculo de consumo</b>: nº de paños según el ancho de bobina, metros lineales de tejido, dirección del dibujo en las rayas y % de merma. Ese cálculo, ligado al catálogo del fabricante, no lo ofrece hoy ninguna herramienta del mercado.</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+  const eur=n=>n.toLocaleString('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+  const num=(n,d=2)=>n.toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+  // ---- catálogo Sauleda (ancho de bobina + €/ml + dirección de dibujo) ----
+  const FABRICS=[
+    {n:'Marfil',hex:'#EAE2CE',tipo:'liso',bobina:120,ml:19},
+    {n:'Shell-S',hex:'#D9CFBF',tipo:'liso',bobina:120,ml:20},
+    {n:'Steel',hex:'#75808A',tipo:'liso',bobina:120,ml:21},
+    {n:'Grafito',hex:'#3D3D40',tipo:'liso',bobina:120,ml:21},
+    {n:'Indigo-S',hex:'#2C3B5E',tipo:'liso',bobina:120,ml:22},
+    {n:'Verde Bosque',hex:'#3F5C46',tipo:'liso',bobina:120,ml:22},
+    {n:'Terracota',hex:'#B25A40',tipo:'liso',bobina:120,ml:22},
+    {n:'Sauleda Marine',hex:'#1F3A5F',tipo:'liso',bobina:152,ml:29},
+    {n:'Clásica Roja',css:'repeating-linear-gradient(90deg,#C8102E 0 7px,#F2EDE2 7px 14px)',tipo:'rayas',bobina:120,ml:25},
+    {n:'Marina',css:'repeating-linear-gradient(90deg,#2C3B5E 0 9px,#F2EDE2 9px 14px)',tipo:'rayas',bobina:120,ml:25},
+    {n:'Mediterránea',css:'repeating-linear-gradient(90deg,#3F7A5E 0 8px,#EFE8D5 8px 12px,#C8A23C 12px 15px,#EFE8D5 15px 19px)',tipo:'rayas',bobina:120,ml:26},
+    {n:'Bretona',css:'repeating-linear-gradient(90deg,#4B4F55 0 6px,#E9E4D8 6px 12px)',tipo:'rayas',bobina:120,ml:24},
+  ];
+
+  // ---- productos ----
+  const PRODUCTS={
+    toldo:{ name:'Toldo cofre', em:'🏠', desc:'Brazos articulados',
+      fields:[
+        {k:'ancho',label:'Ancho del toldo',unit:'m',def:'',ph:'ej. 4.0',hint:'línea de tejido'},
+        {k:'salida',label:'Salida (proyección)',unit:'m',def:'',ph:'ej. 2.5'},
+        {k:'faldon',label:'Faldón',unit:'cm',def:'25',ph:'25'},
+      ],
+      extras:[{k:'motor',label:'Motorizado'}],
+      obstacles:['Canalón','Bajante','Punto de luz','Persiana / contraventana','Reja','Desnivel de muro'],
+      diagram:'toldo',
+      compute(m,f,ex){
+        const ancho=+m.ancho, salida=+m.salida, fald=(+m.faldon||0)/100;
+        const panos=Math.max(1, Math.ceil(ancho*100 / f.bobina));
+        const patt=f.tipo==='rayas'?1.08:1;
+        const longPano=salida + 0.25 + fald + 0.10;      // enrolle + faldón + dobladillos
+        const ml=panos*longPano*patt;
+        const m2util=ancho*(salida+fald);
+        const m2tela=ml*(f.bobina/100);
+        const merma=Math.max(0,1-m2util/m2tela);
+        const tejido=ml*f.ml;
+        const confeccion=m2util*20+40;
+        const estructura=ancho*(ex.motor?230:140);
+        return {
+          medidas:[['Ancho',num(ancho)+' m'],['Salida',num(salida)+' m'],['Faldón',(+m.faldon||0)+' cm'],['Estructura',ex.motor?'Cofre motorizado':'Cofre manual']],
+          consumo:[['Paños de tejido',panos+' × '+num(longPano)+' m'],['Ancho de bobina',f.bobina+' cm'],['Tejido necesario',num(ml)+' ml'],['Superficie útil',num(m2util)+' m²']],
+          merma, patt:f.tipo==='rayas',
+          price:[['Tejido '+f.n+' ('+num(ml)+' ml)',tejido],['Confección',confeccion],[ex.motor?'Estructura motorizada':'Estructura manual',estructura]],
+        };
+      }
+    },
+    pergola:{ name:'Pérgola', em:'🌿', desc:'Lona corredera',
+      fields:[
+        {k:'ancho',label:'Ancho (entre guías)',unit:'m',def:'',ph:'ej. 4.0'},
+        {k:'largo',label:'Largo (salida)',unit:'m',def:'',ph:'ej. 5.0'},
+      ],
+      extras:[],
+      obstacles:['Anclaje a muro','Pilar intermedio','Evacuación de agua','Iluminación LED'],
+      diagram:'pergola',
+      compute(m,f){
+        const ancho=+m.ancho, largo=+m.largo;
+        const panos=Math.max(1,Math.ceil(ancho*100/f.bobina));
+        const patt=f.tipo==='rayas'?1.08:1;
+        const ondas=1.15;
+        const longPano=largo*ondas+0.20;
+        const ml=panos*longPano*patt;
+        const m2util=ancho*largo;
+        const m2tela=ml*(f.bobina/100);
+        const merma=Math.max(0,1-m2util/m2tela);
+        const tejido=ml*f.ml;
+        const confeccion=m2util*22+60;
+        const estructura=m2util*95;
+        return {
+          medidas:[['Ancho',num(ancho)+' m'],['Largo',num(largo)+' m'],['Superficie',num(m2util)+' m²']],
+          consumo:[['Paños',panos+' × '+num(longPano)+' m'],['Ancho de bobina',f.bobina+' cm'],['Tejido necesario',num(ml)+' ml'],['Ondas (+15% tela)','incluido']],
+          merma, patt:f.tipo==='rayas',
+          price:[['Tejido '+f.n+' ('+num(ml)+' ml)',tejido],['Confección lona corredera',confeccion],['Guías y aluminio',estructura]],
+        };
+      }
+    },
+    cojin:{ name:'Cojín de exterior', em:'🛋️', desc:'Tapicería náutica/jardín',
+      fields:[
+        {k:'ancho',label:'Ancho',unit:'cm',def:'',ph:'ej. 60'},
+        {k:'fondo',label:'Fondo',unit:'cm',def:'',ph:'ej. 60'},
+        {k:'grosor',label:'Grosor',unit:'cm',def:'8',ph:'8'},
+        {k:'uds',label:'Unidades',unit:'ud',def:'2',ph:'2'},
+      ],
+      extras:[{k:'vivo',label:'Con vivo (piping)'}],
+      obstacles:[],
+      diagram:'cojin',
+      compute(m,f,ex){
+        const a=+m.ancho, fo=+m.fondo, g=+m.grosor, uds=Math.max(1,+m.uds||1);
+        const caras=2*(a*fo);
+        const boxing=2*(a+fo)*g;
+        const vivo=ex.vivo?2*(2*(a+fo))*4:0;
+        const patt=f.tipo==='rayas'?1.12:1;
+        const areaU=(caras+boxing+vivo)/10000;          // m² por cojín
+        const areaC=areaU*1.15*patt;                    // con merma + casado
+        const mlU=areaC/(f.bobina/100);
+        const ml=mlU*uds;
+        const merma=Math.max(0,1-(areaU*uds)/(ml*(f.bobina/100)));
+        const tejido=ml*f.ml;
+        const confeccion=uds*(ex.vivo?32:26);
+        const relleno=uds*14;
+        return {
+          medidas:[['Medida',num(a,0)+' × '+num(fo,0)+' × '+num(g,0)+' cm'],['Unidades',uds],['Acabado',ex.vivo?'Con vivo':'Sin vivo']],
+          consumo:[['Tejido por cojín',num(mlU)+' ml'],['Ancho de bobina',f.bobina+' cm'],['Tejido total',num(ml)+' ml']],
+          merma, patt:f.tipo==='rayas',
+          price:[['Tejido '+f.n+' ('+num(ml)+' ml)',tejido],['Confección ('+uds+' ud)',confeccion],['Relleno espuma HR',relleno]],
+        };
+      }
+    },
+  };
+  const SOON={camion:{name:'Lona de camión',em:'🚚'}, piscina:{name:'Cubierta de piscina',em:'🏊'}};
+
+  // ---- state ----
+  let step=0, product=null, fabric=null;
+  const measures={}, extras={}, obs={};
+  const client={nombre:'',pob:''};
+
+  // ---- product tiles ----
+  const tiles=$('#tiles');
+  Object.entries(PRODUCTS).forEach(([k,p])=>{
+    const b=document.createElement('button'); b.className='tile'; b.dataset.k=k;
+    b.innerHTML=`<span class="em">${p.em}</span><span class="t">${p.name}</span><br><span class="d">${p.desc}</span>`;
+    b.onclick=()=>selectProduct(k);
+    tiles.appendChild(b);
+  });
+  Object.entries(SOON).forEach(([k,p])=>{
+    const b=document.createElement('button'); b.className='tile'; b.disabled=true;
+    b.innerHTML=`<span class="em">${p.em}</span><span class="t">${p.name}<span class="soon">próx.</span></span><br><span class="d">En el roadmap</span>`;
+    tiles.appendChild(b);
+  });
+
+  function selectProduct(k){
+    product=k;
+    $$('#tiles .tile').forEach(t=>t.classList.toggle('on',t.dataset.k===k));
+    // reset
+    Object.keys(measures).forEach(x=>delete measures[x]);
+    Object.keys(extras).forEach(x=>delete extras[x]);
+    Object.keys(obs).forEach(x=>delete obs[x]);
+    PRODUCTS[k].fields.forEach(f=>{ if(f.def) measures[f.k]=f.def; });
+    buildMeasures();
+    updateNav();
+  }
+
+  // ---- diagrams ----
+  const DIAGRAMS={
+    toldo:(hot)=>`<svg viewBox="0 0 340 220">
+      <rect x="20" y="20" width="300" height="150" fill="var(--panel)" stroke="var(--line)"/>
+      <rect x="120" y="70" width="100" height="80" fill="var(--ground)" stroke="var(--muted)" stroke-width="3"/>
+      <path d="M40 60 L300 60 L312 110 L28 110 Z" fill="var(--chip-bg)" stroke="var(--red)" stroke-width="2"/>
+      <rect x="34" y="52" width="272" height="10" rx="4" fill="var(--muted)"/>
+      <path d="M28 110 q10 14 20 0 q10 14 20 0 q10 14 20 0 q10 14 20 0 q10 14 20 0 q10 14 20 0 q10 14 20 0 q10 14 20 0 q10 14 20 0 q10 14 20 0 q10 14 20 0 q10 14 20 0 q10 14 20 0 L312 110" fill="var(--chip-bg)" stroke="var(--red)" stroke-width="1.5"/>
+      <line class="dim ${hot==='ancho'?'hot':''}" x1="40" y1="40" x2="300" y2="40"/>
+      <text class="dimlab ${hot==='ancho'?'hot':''}" x="160" y="34" text-anchor="middle">Ancho</text>
+      <line class="dim ${hot==='salida'?'hot':''}" x1="316" y1="60" x2="316" y2="110"/>
+      <text class="dimlab ${hot==='salida'?'hot':''}" x="322" y="90" transform="rotate(90 322 90)" text-anchor="middle">Salida</text>
+      <line class="dim ${hot==='faldon'?'hot':''}" x1="18" y1="110" x2="18" y2="128"/>
+      <text class="dimlab ${hot==='faldon'?'hot':''}" x="10" y="124" text-anchor="middle" transform="rotate(90 10 124)">Faldón</text>
+    </svg>`,
+    pergola:(hot)=>`<svg viewBox="0 0 340 220">
+      <rect x="30" y="150" width="280" height="50" fill="var(--panel)"/>
+      <rect x="50" y="60" width="10" height="120" fill="var(--muted)"/><rect x="280" y="60" width="10" height="120" fill="var(--muted)"/>
+      <rect x="45" y="56" width="250" height="10" fill="var(--muted)"/>
+      <path d="M55 70 q15 22 30 0 q15 22 30 0 q15 22 30 0 q15 22 30 0 q15 22 30 0 q15 22 30 0 q15 22 30 0 q15 22 30 0 L285 70 L285 82 q-15 22 -30 0 q-15 22 -30 0 q-15 22 -30 0 q-15 22 -30 0 q-15 22 -30 0 q-15 22 -30 0 q-15 22 -30 0 q-15 22 -30 0 Z" fill="var(--chip-bg)" stroke="var(--red)" stroke-width="1.5"/>
+      <line class="dim ${hot==='ancho'?'hot':''}" x1="55" y1="44" x2="285" y2="44"/>
+      <text class="dimlab ${hot==='ancho'?'hot':''}" x="170" y="38" text-anchor="middle">Ancho (entre guías)</text>
+      <line class="dim ${hot==='largo'?'hot':''}" x1="300" y1="66" x2="300" y2="180"/>
+      <text class="dimlab ${hot==='largo'?'hot':''}" x="310" y="124" text-anchor="middle" transform="rotate(90 310 124)">Largo</text>
+    </svg>`,
+    cojin:(hot)=>`<svg viewBox="0 0 340 220">
+      <rect x="70" y="70" width="200" height="90" rx="10" fill="var(--chip-bg)" stroke="var(--red)" stroke-width="2"/>
+      <rect x="70" y="140" width="200" height="20" rx="8" fill="var(--red)" opacity=".25"/>
+      <line class="dim ${hot==='ancho'?'hot':''}" x1="70" y1="52" x2="270" y2="52"/>
+      <text class="dimlab ${hot==='ancho'?'hot':''}" x="170" y="46" text-anchor="middle">Ancho</text>
+      <line class="dim ${hot==='fondo'?'hot':''}" x1="286" y1="70" x2="286" y2="160"/>
+      <text class="dimlab ${hot==='fondo'?'hot':''}" x="296" y="115" text-anchor="middle" transform="rotate(90 296 115)">Fondo</text>
+      <line class="dim ${hot==='grosor'?'hot':''}" x1="54" y1="140" x2="54" y2="160"/>
+      <text class="dimlab ${hot==='grosor'?'hot':''}" x="44" y="152" text-anchor="middle" transform="rotate(90 44 152)">Grosor</text>
+    </svg>`,
+  };
+  function drawDiagram(hot){ $('#diagram').innerHTML=DIAGRAMS[PRODUCTS[product].diagram](hot); }
+
+  // ---- build measures step ----
+  function buildMeasures(){
+    const p=PRODUCTS[product];
+    $('#mTitle').textContent='Medidas · '+p.name;
+    drawDiagram(null);
+    const fc=$('#fields'); fc.innerHTML='';
+    p.fields.forEach(f=>{
+      const d=document.createElement('div'); d.className='field';
+      d.innerHTML=`<label>${f.label}</label><div class="in"><input inputmode="decimal" data-k="${f.k}" placeholder="${f.ph}" value="${measures[f.k]||''}"><span class="unit">${f.unit}</span></div>`;
+      const inp=d.querySelector('input');
+      inp.addEventListener('focus',()=>{ d.querySelector('.in').classList.add('focus'); drawDiagram(f.k); });
+      inp.addEventListener('blur',()=>d.querySelector('.in').classList.remove('focus'));
+      inp.addEventListener('input',()=>{ measures[f.k]=inp.value.replace(',','.'); updateNav(); });
+      fc.appendChild(d);
+    });
+    // extras
+    const ob=$('#obstacles'); ob.innerHTML='';
+    if(p.extras.length){
+      p.extras.forEach(e=>{
+        const l=document.createElement('label'); l.className='check';
+        l.innerHTML=`<input type="checkbox" data-e="${e.k}"><span>${e.label}</span>`;
+        l.querySelector('input').addEventListener('change',ev=>{ extras[e.k]=ev.target.checked; });
+        ob.appendChild(l);
+      });
+    }
+    if(p.obstacles.length){
+      const h=document.createElement('div'); h.className='obs-h'; h.textContent='Obstáculos en la obra (para el montador)'; ob.appendChild(h);
+      const g=document.createElement('div'); g.className='chkgrid';
+      p.obstacles.forEach(o=>{
+        const l=document.createElement('label'); l.className='check';
+        l.innerHTML=`<input type="checkbox"><span>${o}</span>`;
+        l.querySelector('input').addEventListener('change',ev=>{ obs[o]=ev.target.checked; });
+        g.appendChild(l);
+      });
+      ob.appendChild(g);
+    }
+  }
+
+  // ---- fabrics ----
+  const sw=$('#swatches');
+  FABRICS.forEach(f=>{
+    const b=document.createElement('button'); b.className='swatch'; b.dataset.n=f.n; b.title=f.n;
+    b.style.background=f.css||f.hex;
+    b.innerHTML=`<span class="nm">${f.n}</span>`;
+    b.onclick=()=>{ fabric=f; $$('.swatch').forEach(s=>s.classList.toggle('on',s.dataset.n===f.n)); showFabMeta(); updateNav(); };
+    sw.appendChild(b);
+  });
+  function showFabMeta(){
+    if(!fabric){ $('#fabmeta').innerHTML=''; return; }
+    $('#fabmeta').innerHTML=`<b>${fabric.n}</b> · ${fabric.tipo==='rayas'?'rayas':'liso'} · bobina <b>${fabric.bobina} cm</b> · ${eur(fabric.ml)}/ml`+
+      (fabric.tipo==='rayas'?' · <span style="color:var(--red)">dibujo con dirección: +8% por casado de rayas</span>':'')+
+      `<br><span style="color:var(--ok)">100% acrílico tintado en masa · Garantía 10 años · Muestra física gratuita incluida.</span>`;
+  }
+
+  // ---- quote ----
+  function buildQuote(){
+    const p=PRODUCTS[product];
+    const R=p.compute(measures,fabric,extras);
+    const subtotal=R.price.reduce((a,[,v])=>a+v,0);
+    const iva=subtotal*0.21, total=subtotal+iva;
+    const mermaPct=Math.round(R.merma*100);
+    const mermaColor = mermaPct<=25?'var(--ok)':(mermaPct<=40?'#E67E22':'var(--red)');
+    const obsList=Object.keys(obs).filter(k=>obs[k]);
+    const d=new Date();
+    const fecha=d.toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+    const ref='SS-'+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'-'+String(Math.floor(d.getSeconds()*17%97)).padStart(2,'0');
+    $('#quote').innerHTML=`
+      <div class="q-head">
+        <div class="qt">Presupuesto ${p.name}</div>
+        <div class="qs">Ref. ${ref} · ${fecha}${client.nombre?' · '+client.nombre:''}${client.pob?' ('+client.pob+')':''}</div>
+      </div>
+      <div class="q-body">
+        <div class="q-sec">Medidas</div>
+        ${R.medidas.map(([k,v])=>`<div class="q-row"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('')}
+        <div class="q-sec">Consumo de tejido — ${fabric.n}</div>
+        ${R.consumo.map(([k,v])=>`<div class="q-row"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('')}
+        <div class="q-row"><span class="k">Merma estimada</span><span class="v"><span class="badge-merma" style="background:${mermaColor};color:#fff">${mermaPct}%</span></span></div>
+        <div class="q-sec">Importe</div>
+        ${R.price.map(([k,v])=>`<div class="q-row"><span class="k">${k}</span><span class="v">${eur(v)}</span></div>`).join('')}
+        <div class="q-row"><span class="k">IVA 21%</span><span class="v">${eur(iva)}</span></div>
+        <div class="q-total"><span class="tl">TOTAL</span><span class="tv">${eur(total)}</span></div>
+        ${obsList.length?`<div class="q-note">⚠️ Obra: ${obsList.join(' · ')}</div>`:''}
+        <div class="q-note ok">✓ Incluye muestra física gratuita del tejido ${fabric.n}. Presupuesto válido 30 días.</div>
+        <div class="q-note">Sauleda, S.A. · Tejido fabricado en Avinyó (Barcelona) · Estimación orientativa.</div>
+      </div>`;
+  }
+
+  // ---- navigation ----
+  const steps=['s0','s1','s2','s3'];
+  function go(n){
+    step=n;
+    steps.forEach((id,i)=>$('#'+id).classList.toggle('on',i===n));
+    $$('#stepper .st').forEach((el,i)=>{ el.classList.toggle('on',i===n); el.classList.toggle('done',i<n); });
+    $('#btnBack').style.display = n>0?'block':'none';
+    const last=n===3;
+    $('#btnNext').style.display=last?'none':'block';
+    $('#btnPdf').style.display=last?'block':'none';
+    if(n===3) buildQuote();
+    updateNav();
+    $('.body').scrollIntoView({block:'nearest'});
+  }
+  function measuresValid(){
+    if(!product) return false;
+    return PRODUCTS[product].fields.every(f=>{ const v=parseFloat(measures[f.k]); return !isNaN(v)&&v>0; });
+  }
+  function canNext(){
+    if(step===0) return !!product;
+    if(step===1) return measuresValid();
+    if(step===2) return !!fabric;
+    return true;
+  }
+  function updateNav(){ $('#btnNext').disabled=!canNext(); }
+
+  $('#stepper').addEventListener('click',e=>{ const st=e.target.closest('.st'); if(st&&st.classList.contains('done')) go(+st.dataset.s); });
+  $('#btnNext').onclick=()=>{ if(canNext()&&step<3) go(step+1); };
+  $('#btnBack').onclick=()=>{ if(step>0) go(step-1); };
+  $('#cliNombre').addEventListener('input',e=>{ client.nombre=e.target.value; buildQuote(); });
+  $('#cliPob').addEventListener('input',e=>{ client.pob=e.target.value; buildQuote(); });
+  $('#btnPdf').onclick=()=>{ buildQuote(); const t=$('#toast'); t.textContent='Generando PDF del presupuesto…'; t.classList.add('show'); setTimeout(()=>{t.classList.remove('show'); window.print();},700); };
+
+  updateNav();
+})();
+</script>
