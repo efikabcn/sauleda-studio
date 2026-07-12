@@ -1,793 +1,340 @@
 <meta charset="utf-8">
-<title>Sauleda Studio — Visualizador (maqueta)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sauleda Studio — Tu toldo sobre tu foto</title>
 <style>
   :root{
-    --red:#C8102E; --red-ink:#A50D26;
-    --ink:#2C2C2C; --muted:#7A7A7A; --line:#DDDDDD;
-    --ground:#FFFFFF; --panel:#F5F5F5; --panel2:#FAFAFA;
-    --chip-bg:#FBEAED; --ok:#2E7D32;
+    --red:#C8102E;--ink:#2C2C2C;--muted:#7A7A7A;--line:#DDDDDD;
+    --ground:#FFFFFF;--panel:#F5F5F5;--panel2:#FAFAFA;--chip-bg:#FBEAED;--ok:#2E7D32;
     --shadow:0 10px 30px rgba(44,44,44,.10);
   }
   @media (prefers-color-scheme: dark){
-    :root{
-      --red:#E23A54; --red-ink:#F06378;
-      --ink:#F0EEEC; --muted:#A5A19D; --line:#3A3A3E;
-      --ground:#1B1B1E; --panel:#242428; --panel2:#2A2A2F;
-      --chip-bg:#3A2226; --ok:#67B26C;
-      --shadow:0 10px 30px rgba(0,0,0,.45);
-    }
+    :root{--red:#E23A54;--ink:#F0EEEC;--muted:#A5A19D;--line:#3A3A3E;--ground:#1B1B1E;--panel:#242428;--panel2:#2A2A2F;--chip-bg:#3A2226;--ok:#67B26C;--shadow:0 10px 30px rgba(0,0,0,.45);}
   }
-  :root[data-theme="light"]{
-    --red:#C8102E; --red-ink:#A50D26;
-    --ink:#2C2C2C; --muted:#7A7A7A; --line:#DDDDDD;
-    --ground:#FFFFFF; --panel:#F5F5F5; --panel2:#FAFAFA;
-    --chip-bg:#FBEAED; --ok:#2E7D32;
-    --shadow:0 10px 30px rgba(44,44,44,.10);
-  }
-  :root[data-theme="dark"]{
-    --red:#E23A54; --red-ink:#F06378;
-    --ink:#F0EEEC; --muted:#A5A19D; --line:#3A3A3E;
-    --ground:#1B1B1E; --panel:#242428; --panel2:#2A2A2F;
-    --chip-bg:#3A2226; --ok:#67B26C;
-    --shadow:0 10px 30px rgba(0,0,0,.45);
-  }
+  :root[data-theme="light"]{--red:#C8102E;--ink:#2C2C2C;--muted:#7A7A7A;--line:#DDDDDD;--ground:#FFFFFF;--panel:#F5F5F5;--panel2:#FAFAFA;--chip-bg:#FBEAED;--ok:#2E7D32;}
+  :root[data-theme="dark"]{--red:#E23A54;--ink:#F0EEEC;--muted:#A5A19D;--line:#3A3A3E;--ground:#1B1B1E;--panel:#242428;--panel2:#2A2A2F;--chip-bg:#3A2226;--ok:#67B26C;}
   *{box-sizing:border-box}
-  body{
-    margin:0; background:var(--ground); color:var(--ink);
-    font-family:Calibri,'Segoe UI',-apple-system,'Helvetica Neue',sans-serif;
-    font-size:16px; line-height:1.5;
-  }
-  .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:Calibri,'Segoe UI',-apple-system,'Helvetica Neue',sans-serif;font-size:16px;line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 20px 60px}
   .kicker{font-size:12px;font-weight:700;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
-  h1{
-    font-family:'Arial Black','Archivo Black',Arial,sans-serif;
-    font-size:clamp(28px,5vw,44px); margin:6px 0 4px; color:var(--red); letter-spacing:-.01em;
-    text-wrap:balance;
-  }
-  .sub{color:var(--muted);max-width:62ch;margin:0 0 8px}
-  .chip{
-    display:inline-block;background:var(--chip-bg);color:var(--red);border:1px solid var(--red);
-    border-radius:999px;padding:2px 12px;font-size:12px;font-weight:700;letter-spacing:.08em;
-  }
-  /* fake browser frame */
-  .browser{
-    margin-top:22px;border:1px solid var(--line);border-radius:10px;overflow:hidden;
-    box-shadow:var(--shadow);background:var(--ground);
-  }
-  .browser-bar{
-    display:flex;align-items:center;gap:10px;padding:9px 14px;
-    background:var(--panel);border-bottom:1px solid var(--line);
-  }
-  .dots{display:flex;gap:6px}
-  .dot{width:11px;height:11px;border-radius:50%;background:var(--line)}
+  h1{font-family:'Arial Black','Archivo Black',Arial,sans-serif;font-size:clamp(26px,4.5vw,40px);margin:6px 0 4px;color:var(--red);letter-spacing:-.01em;text-wrap:balance}
+  .sub{color:var(--muted);max-width:64ch;margin:0 0 10px}
+  .chip{display:inline-block;background:var(--chip-bg);color:var(--red);border:1px solid var(--red);border-radius:999px;padding:2px 12px;font-size:12px;font-weight:700;letter-spacing:.06em}
+  .browser{margin-top:20px;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);background:var(--ground)}
+  .browser-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--panel);border-bottom:1px solid var(--line)}
+  .dots{display:flex;gap:6px}.dot{width:11px;height:11px;border-radius:50%;background:var(--line)}
   .dot:first-child{background:#E4685F}.dot:nth-child(2){background:#E8B549}.dot:nth-child(3){background:#6BBF61}
-  .url{
-    flex:1;background:var(--ground);border:1px solid var(--line);border-radius:6px;
-    padding:4px 12px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  }
+  .url{flex:1;background:var(--ground);border:1px solid var(--line);border-radius:6px;padding:4px 12px;font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .url b{color:var(--ink);font-weight:600}
-  .browser-note{font-size:12px;color:var(--muted);white-space:nowrap}
-  /* app grid */
-  .app{display:grid;grid-template-columns:1fr 320px;gap:0}
-  @media(max-width:840px){.app{grid-template-columns:1fr}}
-  .stage{position:relative;background:#8FC3E0;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:flex-end}
-  .stage > svg{flex:none}
-  @media(max-width:840px){.stage{border-right:none;border-bottom:1px solid var(--line)}}
-  .stage svg{display:block;width:100%;height:auto}
-  .photo-stage{position:relative;width:100%;aspect-ratio:3/2;overflow:hidden;background:#111}
-  .photo-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-  .photo-stage svg{position:absolute;width:60%;left:20%;top:12%;cursor:grab;touch-action:none}
-  .photo-hint{
-    position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.55);color:#fff;
-    font-size:12px;padding:4px 10px;border-radius:6px;pointer-events:none;
-  }
-  /* controls */
-  .rail{padding:18px 18px 22px;display:flex;flex-direction:column;gap:16px;background:var(--ground)}
-  .group h3{
-    margin:0 0 8px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--muted);font-weight:700;
-  }
+  .app{display:grid;grid-template-columns:1fr 300px}
+  @media(max-width:820px){.app{grid-template-columns:1fr}}
+  .stage{position:relative;background:#20232A;display:flex;align-items:center;justify-content:center;border-right:1px solid var(--line)}
+  @media(max-width:820px){.stage{border-right:none;border-bottom:1px solid var(--line)}}
+  #cv{display:block;width:100%;height:auto;touch-action:none;cursor:grab}
+  .badge{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.6);color:#fff;font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;pointer-events:none}
+  .badge b{color:#FFD1D8}
+  .rail{padding:16px;display:flex;flex-direction:column;gap:15px;background:var(--ground)}
+  .group h3{margin:0 0 8px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700}
   .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-  .seg button{
-    flex:1;padding:8px 4px;border:none;background:transparent;color:var(--ink);
-    font:inherit;font-size:13.5px;cursor:pointer;border-right:1px solid var(--line);
-  }
+  .seg button{flex:1;padding:8px 4px;border:none;background:transparent;color:var(--ink);font:inherit;font-size:13.5px;cursor:pointer;border-right:1px solid var(--line)}
   .seg button:last-child{border-right:none}
   .seg button.on{background:var(--red);color:#fff;font-weight:700}
-  .seg button:focus-visible,.swatch:focus-visible,.cta:focus-visible,button:focus-visible{
-    outline:2px solid var(--red);outline-offset:2px;
-  }
+  button:focus-visible,.swatch:focus-visible{outline:2px solid var(--red);outline-offset:2px}
   .swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .swatch{
-    aspect-ratio:1;border-radius:6px;border:2px solid var(--line);cursor:pointer;padding:0;
-    background-size:cover;position:relative;
-  }
+  .swatch{aspect-ratio:1;border-radius:7px;border:2px solid var(--line);cursor:pointer;padding:0;position:relative;background-size:22px 100%}
   .swatch.on{border-color:var(--red);box-shadow:0 0 0 2px var(--chip-bg)}
-  .fab-card{
-    background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;
-  }
-  .fab-card .name{font-weight:700;font-size:15px}
-  .fab-card .meta{font-size:13px;color:var(--muted)}
-  .fab-card .meta b{color:var(--ok);font-weight:700}
-  label.slider{display:block;font-size:13.5px;color:var(--ink)}
-  label.slider span{display:flex;justify-content:space-between;color:var(--muted);font-variant-numeric:tabular-nums}
-  input[type=range]{width:100%;accent-color:var(--red)}
-  .cta{
-    display:block;width:100%;padding:12px;border:none;border-radius:8px;cursor:pointer;
-    background:var(--red);color:#fff;font:inherit;font-weight:700;font-size:15.5px;
-  }
-  .cta.secondary{background:transparent;color:var(--red);border:1.5px solid var(--red);font-weight:600}
-  .lead-note{font-size:12.5px;color:var(--muted);margin-top:6px}
-  .lead-note b{color:var(--ink)}
-  .form{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:none}
-  .form.open{display:block}
-  .form input{
-    width:100%;padding:8px 10px;margin:4px 0 10px;border:1px solid var(--line);border-radius:6px;
-    background:var(--ground);color:var(--ink);font:inherit;font-size:14px;
-  }
-  .toast{
-    display:none;background:var(--ok);color:#fff;border-radius:8px;padding:12px 14px;font-size:14px;
-  }
+  .fabmeta{font-size:13px;color:var(--muted)}.fabmeta b{color:var(--ink)}
+  .row{display:flex;gap:8px}
+  .cta{display:block;width:100%;padding:11px;border:none;border-radius:9px;cursor:pointer;background:var(--red);color:#fff;font:inherit;font-weight:700;font-size:15px}
+  .btn2{flex:1;padding:9px;border:1.5px solid var(--line);border-radius:9px;cursor:pointer;background:transparent;color:var(--ink);font:inherit;font-size:13.5px}
+  .btn2.on{border-color:var(--red);color:var(--red);font-weight:700}
+  .hint{font-size:12px;color:var(--muted)}.hint b{color:var(--ink)}
+  .toast{display:none;background:var(--ok);color:#fff;border-radius:8px;padding:11px 13px;font-size:13.5px}
   .toast.show{display:block}
-  .foot{margin-top:26px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:13.5px;max-width:75ch}
+  .foot{margin-top:24px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:13.5px;max-width:80ch}
   .foot b{color:var(--ink)}
   .hidden{display:none!important}
-  @media (prefers-reduced-motion: no-preference){
-    .toast.show{animation:pop .25s ease}
-    @keyframes pop{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
-  }
 </style>
 
 <div class="wrap">
-  <div class="kicker">Sauleda · Estrategia digital · Maqueta interna</div>
-  <h1>SAULEDA STUDIO</h1>
-  <p class="sub">Maqueta navegable del <b>visualizador de tejidos embebible</b> (Fase 1). Así se vería incrustado en la web de un toldista cualquiera de la red Sauleda — el marco del navegador es parte de la demostración.</p>
-  <span class="chip">MAQUETA · NO ES UN PRODUCTO REAL</span>
+  <div class="kicker">Sauleda Studio · Visualizador · Fase 1 (v2)</div>
+  <h1>Tu toldo Sauleda, sobre tu propia foto</h1>
+  <p class="sub">Sube la foto de la fachada y coloca el toldo con textura de tejido real, <b>pliegues, faldón y sombra proyectada</b>. Arrastra las 4 esquinas para encajarlo en tu casa — más realista y más flexible que el visualizador de Sunbrella.</p>
+  <span class="chip">PROTOTIPO · RENDER SOBRE FOTO</span>
 
-  <div class="browser" role="region" aria-label="Demostración del visualizador embebido">
+  <div class="browser">
     <div class="browser-bar">
       <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-      <div class="url">https://<b>www.toldos-garcia.es</b>/disena-tu-toldo &nbsp;·&nbsp; con tejidos Sauleda</div>
-      <div class="browser-note">← la web del toldista</div>
+      <div class="url">https://<b>www.toldos-garcia.es</b>/disena-tu-toldo · con tejidos Sauleda</div>
     </div>
-
     <div class="app">
-      <!-- ============ STAGE ============ -->
-      <div class="stage" id="stage">
-        <svg id="scene" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" aria-label="Escena de ejemplo con el tejido seleccionado">
-          <defs>
-            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#8FC3E0"/><stop offset=".7" stop-color="#CFE6EE"/><stop offset="1" stop-color="#EAF3F1"/>
-            </linearGradient>
-            <radialGradient id="sun" cx=".5" cy=".5" r=".5">
-              <stop offset="0" stop-color="#FFF6D8" stop-opacity=".95"/><stop offset="1" stop-color="#FFF6D8" stop-opacity="0"/>
-            </radialGradient>
-            <linearGradient id="plaster" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#F3E7CF"/><stop offset=".6" stop-color="#EADCBE"/><stop offset="1" stop-color="#DECDA9"/>
-            </linearGradient>
-            <linearGradient id="glass" x1="0" y1="0" x2=".4" y2="1">
-              <stop offset="0" stop-color="#BBD3E2"/><stop offset=".5" stop-color="#7E9CB2"/><stop offset="1" stop-color="#5D7A90"/>
-            </linearGradient>
-            <linearGradient id="terrace" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#CDBD9E"/><stop offset="1" stop-color="#B5A483"/>
-            </linearGradient>
-            <linearGradient id="wood" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#6E5236"/><stop offset=".5" stop-color="#8A6A47"/><stop offset="1" stop-color="#5C4229"/>
-            </linearGradient>
-            <linearGradient id="woodH" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#8A6A47"/><stop offset=".5" stop-color="#75573A"/><stop offset="1" stop-color="#54401f"/>
-            </linearGradient>
-            <linearGradient id="alu" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#5A6068"/><stop offset=".45" stop-color="#3C4147"/><stop offset=".55" stop-color="#666D75"/><stop offset="1" stop-color="#2E3237"/>
-            </linearGradient>
-            <linearGradient id="pool" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#5FC3D8"/><stop offset="1" stop-color="#2286A8"/>
-            </linearGradient>
-            <linearGradient id="hedge" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#A9C48F"/><stop offset="1" stop-color="#7B9A64"/>
-            </linearGradient>
-            <!-- sombreado de tela: caída de luz de cofre a borde -->
-            <linearGradient id="fabShade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#000000" stop-opacity=".28"/>
-              <stop offset=".18" stop-color="#000000" stop-opacity=".08"/>
-              <stop offset=".45" stop-color="#FFFFFF" stop-opacity=".10"/>
-              <stop offset=".8" stop-color="#000000" stop-opacity=".04"/>
-              <stop offset="1" stop-color="#000000" stop-opacity=".16"/>
-            </linearGradient>
-            <linearGradient id="valShade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#000000" stop-opacity=".22"/>
-              <stop offset=".5" stop-color="#000000" stop-opacity="0"/>
-              <stop offset="1" stop-color="#000000" stop-opacity=".14"/>
-            </linearGradient>
-            <radialGradient id="umbShade" cx=".5" cy=".18" r=".95">
-              <stop offset="0" stop-color="#FFFFFF" stop-opacity=".22"/>
-              <stop offset=".55" stop-color="#000000" stop-opacity="0"/>
-              <stop offset="1" stop-color="#000000" stop-opacity=".26"/>
-            </radialGradient>
-            <pattern id="weave" patternUnits="userSpaceOnUse" width="4" height="4">
-              <rect width="4" height="4" fill="none"/>
-              <path d="M0 2 H4" stroke="#FFFFFF" stroke-width=".6" opacity=".08"/>
-              <path d="M2 0 V4" stroke="#000000" stroke-width=".5" opacity=".06"/>
-            </pattern>
-            <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="7"/>
-            </filter>
-            <filter id="drop" x="-20%" y="-20%" width="140%" height="150%">
-              <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity=".28"/>
-            </filter>
-            <clipPath id="valClip"><path id="valClipPath" d=""/></clipPath>
-            <clipPath id="pgClip"><path id="pgClipPath" d=""/></clipPath>
-            <clipPath id="umbClip"><path id="umbClipPath" d=""/></clipPath>
-          </defs>
-
-          <!-- fondo común -->
-          <rect width="900" height="470" fill="url(#sky)"/>
-          <circle cx="780" cy="86" r="120" fill="url(#sun)"/>
-          <ellipse cx="240" cy="86" rx="70" ry="16" fill="#FFFFFF" opacity=".55"/>
-          <ellipse cx="300" cy="72" rx="46" ry="12" fill="#FFFFFF" opacity=".4"/>
-          <ellipse cx="600" cy="140" rx="55" ry="12" fill="#FFFFFF" opacity=".35"/>
-
-          <!-- ===== ESCENA: TOLDO COFRE ===== -->
-          <g id="scCofre">
-            <rect y="470" width="900" height="130" fill="url(#terrace)"/>
-            <g stroke="#9C8D6E" stroke-width="1.5" opacity=".6">
-              <line x1="0" y1="470" x2="900" y2="470"/>
-              <line x1="0" y1="505" x2="900" y2="505"/><line x1="0" y1="548" x2="900" y2="548"/>
-              <line x1="130" y1="470" x2="60" y2="600"/><line x1="300" y1="470" x2="265" y2="600"/>
-              <line x1="450" y1="470" x2="450" y2="600"/><line x1="600" y1="470" x2="635" y2="600"/>
-              <line x1="770" y1="470" x2="840" y2="600"/>
-            </g>
-            <!-- fachada -->
-            <rect x="110" y="52" width="680" height="418" fill="url(#plaster)"/>
-            <rect x="110" y="52" width="680" height="10" fill="#FFFFFF" opacity=".4"/>
-            <rect x="110" y="52" width="680" height="418" fill="none" stroke="#C9BA96"/>
-            <rect x="110" y="446" width="680" height="24" fill="#CBBA95"/>
-            <!-- ventana -->
-            <rect x="322" y="222" width="256" height="196" fill="#8C7B5C" opacity=".35"/>
-            <rect x="330" y="230" width="240" height="180" fill="url(#glass)"/>
-            <polygon points="336,236 420,236 350,404 336,404" fill="#FFFFFF" opacity=".16"/>
-            <polygon points="440,236 480,236 400,404 380,404" fill="#FFFFFF" opacity=".10"/>
-            <rect x="330" y="230" width="240" height="180" fill="none" stroke="#F7F3E8" stroke-width="9"/>
-            <rect x="330" y="230" width="240" height="180" fill="none" stroke="#B8AD93" stroke-width="2"/>
-            <line x1="450" y1="230" x2="450" y2="410" stroke="#F7F3E8" stroke-width="7"/>
-            <rect x="318" y="410" width="264" height="10" rx="3" fill="#D8CBAA"/>
-            <!-- jardinera -->
-            <rect x="356" y="404" width="188" height="8" fill="#9A5A40"/>
-            <g fill="#5E7D4C">
-              <ellipse cx="380" cy="400" rx="16" ry="9"/><ellipse cx="412" cy="397" rx="18" ry="10"/>
-              <ellipse cx="450" cy="399" rx="17" ry="9"/><ellipse cx="488" cy="397" rx="18" ry="10"/><ellipse cx="520" cy="400" rx="15" ry="8"/>
-            </g>
-            <g fill="#C8102E" opacity=".85">
-              <circle cx="388" cy="396" r="3"/><circle cx="422" cy="393" r="3"/><circle cx="458" cy="395" r="3"/><circle cx="494" cy="393" r="3"/><circle cx="514" cy="397" r="3"/>
-            </g>
-            <!-- maceta -->
-            <g>
-              <path d="M196 470 L236 470 L230 414 L202 414 Z" fill="#A9603F"/>
-              <path d="M196 470 L216 470 L212 414 L202 414 Z" fill="#8C4C31"/>
-              <g stroke="#4E7A42" stroke-width="5" fill="none" stroke-linecap="round">
-                <path d="M216 416 C210 380 194 362 178 352"/>
-                <path d="M216 416 C218 374 230 354 248 344"/>
-                <path d="M216 416 C214 384 214 366 216 348"/>
-              </g>
-            </g>
-            <!-- sombra proyectada del toldo en fachada y suelo -->
-            <path id="awnWallShadow" d="" fill="#6E6146" opacity=".30" filter="url(#soft)"/>
-            <ellipse id="awnShadow" cx="450" cy="512" rx="230" ry="20" fill="#6E6146" opacity=".35" filter="url(#soft)"/>
-            <!-- toldo -->
-            <g id="awning" filter="url(#drop)">
-              <line id="awnArmL" x1="300" y1="196" x2="272" y2="330" stroke="#33373C" stroke-width="6" stroke-linecap="round"/>
-              <line id="awnArmR" x1="600" y1="196" x2="628" y2="330" stroke="#33373C" stroke-width="6" stroke-linecap="round"/>
-              <g id="awnFabricG"></g>
-              <path id="awnWeave" d="" fill="url(#weave)" pointer-events="none"/>
-              <path id="awnShade" d="" fill="url(#fabShade)" pointer-events="none"/>
-              <g id="awnSeams"></g>
-              <g id="valG" clip-path="url(#valClip)"></g>
-              <path id="valShadePath" d="" fill="url(#valShade)" clip-path="url(#valClip)" pointer-events="none"/>
-              <path id="valOutline" d="" fill="none" stroke="#00000030" stroke-width="1"/>
-              <!-- cofre -->
-              <rect x="288" y="170" width="324" height="24" rx="11" fill="url(#alu)"/>
-              <rect x="292" y="174" width="316" height="5" rx="2.5" fill="#FFFFFF" opacity=".25"/>
-              <rect x="288" y="188" width="324" height="4" fill="#000000" opacity=".3"/>
-            </g>
-          </g>
-
-          <!-- ===== ESCENA: PÉRGOLA ===== -->
-          <g id="scPergola" class="hidden">
-            <rect x="0" y="330" width="900" height="140" fill="url(#hedge)"/>
-            <g fill="#6B8A55" opacity=".8">
-              <ellipse cx="80" cy="336" rx="60" ry="14"/><ellipse cx="230" cy="332" rx="70" ry="16"/>
-              <ellipse cx="420" cy="335" rx="65" ry="14"/><ellipse cx="640" cy="332" rx="75" ry="16"/><ellipse cx="830" cy="336" rx="60" ry="13"/>
-            </g>
-            <rect y="470" width="900" height="130" fill="url(#terrace)"/>
-            <g stroke="#9C8D6E" stroke-width="1.5" opacity=".5">
-              <line x1="0" y1="505" x2="900" y2="505"/><line x1="0" y1="548" x2="900" y2="548"/>
-              <line x1="200" y1="470" x2="140" y2="600"/><line x1="450" y1="470" x2="450" y2="600"/><line x1="700" y1="470" x2="760" y2="600"/>
-            </g>
-            <rect x="140" y="462" width="620" height="14" rx="4" fill="#C4B393"/>
-            <!-- sombra bajo pérgola -->
-            <ellipse cx="450" cy="500" rx="280" ry="26" fill="#5F6A4C" opacity=".30" filter="url(#soft)"/>
-            <!-- muebles bajo la pérgola -->
-            <g opacity=".92">
-              <rect x="380" y="398" width="140" height="10" rx="4" fill="url(#woodH)"/>
-              <rect x="440" y="408" width="14" height="62" fill="url(#wood)"/>
-              <rect x="330" y="414" width="52" height="8" rx="3" fill="#4A4E54"/>
-              <rect x="336" y="422" width="8" height="48" fill="#4A4E54"/><rect x="368" y="422" width="8" height="48" fill="#4A4E54"/>
-              <rect x="332" y="384" width="10" height="34" rx="3" fill="#4A4E54"/>
-              <rect x="518" y="414" width="52" height="8" rx="3" fill="#4A4E54"/>
-              <rect x="524" y="422" width="8" height="48" fill="#4A4E54"/><rect x="556" y="422" width="8" height="48" fill="#4A4E54"/>
-              <rect x="558" y="384" width="10" height="34" rx="3" fill="#4A4E54"/>
-            </g>
-            <!-- estructura de madera -->
-            <rect x="176" y="188" width="20" height="292" fill="url(#wood)"/>
-            <rect x="704" y="188" width="20" height="292" fill="url(#wood)"/>
-            <rect x="298" y="158" width="16" height="244" fill="url(#wood)" opacity=".92"/>
-            <rect x="586" y="158" width="16" height="244" fill="url(#wood)" opacity=".92"/>
-            <rect x="156" y="172" width="588" height="18" rx="3" fill="url(#woodH)"/>
-            <rect x="282" y="144" width="348" height="15" rx="3" fill="url(#woodH)" opacity=".95"/>
-            <!-- lona corredera de ondas -->
-            <g id="pgCanopyG" clip-path="url(#pgClip)"></g>
-            <path id="pgShade" d="" fill="url(#valShade)" clip-path="url(#pgClip)" pointer-events="none"/>
-            <path id="pgOutline" d="" fill="none" stroke="#00000028" stroke-width="1"/>
-            <g id="pgRods"></g>
-          </g>
-
-          <!-- ===== ESCENA: MUEBLE + PARASOL (piscina) ===== -->
-          <g id="scMueble" class="hidden">
-            <rect x="0" y="330" width="900" height="60" fill="url(#hedge)"/>
-            <rect y="388" width="900" height="212" fill="#D9CBAB"/>
-            <g stroke="#BCAD8C" stroke-width="1.5" opacity=".7">
-              <line x1="0" y1="430" x2="900" y2="430"/><line x1="0" y1="480" x2="900" y2="480"/><line x1="0" y1="540" x2="900" y2="540"/>
-            </g>
-            <!-- piscina -->
-            <rect x="520" y="430" width="380" height="170" rx="10" fill="#EAE2CC"/>
-            <rect x="532" y="440" width="360" height="152" rx="8" fill="url(#pool)"/>
-            <g stroke="#BFEAF2" stroke-width="3" fill="none" opacity=".7">
-              <path d="M560 470 q30 -8 60 0 t60 0 t60 0 t60 0 t60 0"/>
-              <path d="M560 510 q30 -8 60 0 t60 0 t60 0 t60 0 t60 0" opacity=".5"/>
-              <path d="M560 550 q30 -8 60 0 t60 0 t60 0 t60 0 t60 0" opacity=".35"/>
-            </g>
-            <!-- sombra parasol -->
-            <ellipse cx="330" cy="520" rx="200" ry="26" fill="#7A6F55" opacity=".32" filter="url(#soft)"/>
-            <!-- parasol -->
-            <g id="umbrella" filter="url(#drop)">
-              <line x1="330" y1="180" x2="330" y2="515" stroke="#3C4147" stroke-width="9"/>
-              <line x1="327" y1="180" x2="327" y2="515" stroke="#FFFFFF" stroke-width="1.5" opacity=".25"/>
-              <g id="umbCanopyG" clip-path="url(#umbClip)"></g>
-              <path id="umbShadePath" d="" fill="url(#umbShade)" clip-path="url(#umbClip)" pointer-events="none"/>
-              <path id="umbOutline" d="" fill="none" stroke="#00000030" stroke-width="1.2"/>
-              <g id="umbRibs"></g>
-              <circle cx="330" cy="178" r="6" fill="#3C4147"/>
-              <path d="M300 515 L360 515 L352 528 L308 528 Z" fill="#3C4147"/>
-            </g>
-            <!-- tumbona -->
-            <g id="lounger" filter="url(#drop)">
-              <ellipse cx="180" cy="524" rx="130" ry="12" fill="#7A6F55" opacity=".3" filter="url(#soft)"/>
-              <rect x="70" y="462" width="240" height="10" rx="5" fill="url(#woodH)"/>
-              <rect x="84" y="472" width="9" height="46" fill="#54401f"/>
-              <rect x="288" y="472" width="9" height="46" fill="#54401f"/>
-              <g id="seatCushionG"></g>
-              <g id="backCushionG"></g>
-            </g>
-          </g>
-        </svg>
-
-        <!-- photo mode -->
-        <div class="photo-stage hidden" id="photoStage">
-          <img id="photoImg" alt="Tu foto">
-          <svg id="photoAwning" viewBox="0 0 400 195" xmlns="http://www.w3.org/2000/svg" aria-label="Toldo arrastrable sobre tu foto">
-            <defs>
-              <linearGradient id="pFabShade" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#000000" stop-opacity=".3"/>
-                <stop offset=".2" stop-color="#000000" stop-opacity=".08"/>
-                <stop offset=".5" stop-color="#FFFFFF" stop-opacity=".1"/>
-                <stop offset="1" stop-color="#000000" stop-opacity=".18"/>
-              </linearGradient>
-              <linearGradient id="pAlu" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#5A6068"/><stop offset=".5" stop-color="#3C4147"/><stop offset="1" stop-color="#2E3237"/>
-              </linearGradient>
-              <clipPath id="pValClip"><path id="pValClipPath" d=""/></clipPath>
-            </defs>
-            <g id="pAwnG"></g>
-            <path id="pAwnShade" d="" fill="url(#pFabShade)"/>
-            <g id="pValG" clip-path="url(#pValClip)"></g>
-            <path id="pValOutline" d="" fill="none" stroke="#00000030"/>
-            <rect x="10" y="4" width="380" height="20" rx="9" fill="url(#pAlu)"/>
-            <rect x="14" y="7" width="372" height="4" rx="2" fill="#FFFFFF" opacity=".25"/>
-          </svg>
-          <div class="photo-hint">Arrastra el toldo · ajusta el tamaño en el panel</div>
-        </div>
+      <div class="stage">
+        <canvas id="cv" width="900" height="600" aria-label="Foto con el toldo Sauleda"></canvas>
+        <div class="badge" id="badge">Arrastra las <b>esquinas</b> para ajustar el toldo</div>
       </div>
-
-      <!-- ============ RAIL ============ -->
       <div class="rail">
         <div class="group">
-          <h3>Producto</h3>
-          <div class="seg" role="group" aria-label="Tipo de producto">
-            <button class="on" data-mode="cofre">Toldo cofre</button>
-            <button data-mode="pergola">Pérgola</button>
-            <button data-mode="mueble">Mueble</button>
+          <h3>Foto</h3>
+          <div class="seg" role="group" aria-label="Foto">
+            <button class="on" id="btnSample">Ejemplo</button>
+            <button id="btnUpload">Subir foto</button>
           </div>
+          <input type="file" id="fileInput" accept="image/*" class="hidden">
         </div>
-
-        <div class="group">
-          <h3>Escena</h3>
-          <div class="seg" role="group" aria-label="Escena">
-            <button class="on" data-scene="demo">Ejemplo</button>
-            <button data-scene="photo">Tu foto</button>
-          </div>
-          <input type="file" id="photoInput" accept="image/*" class="hidden">
-        </div>
-
-        <div class="group" id="grpSalida">
-          <label class="slider">
-            <span><b>Salida del toldo</b><em id="salidaVal">250 cm</em></span>
-            <input type="range" id="salida" min="40" max="100" value="78" aria-label="Salida del toldo">
-          </label>
-          <label class="slider" id="grpFaldon" style="margin-top:8px">
-            <span><b>Faldón</b></span>
-          </label>
-          <div class="seg" id="segFaldon" role="group" aria-label="Tipo de faldón">
-            <button data-faldon="ondas" class="on">Con ondas</button>
-            <button data-faldon="recto">Recto</button>
-            <button data-faldon="no">Sin faldón</button>
-          </div>
-        </div>
-
-        <div class="group hidden" id="grpTam">
-          <label class="slider">
-            <span><b>Tamaño del toldo</b><em id="tamVal">60%</em></span>
-            <input type="range" id="tam" min="30" max="95" value="60" aria-label="Tamaño del toldo sobre la foto">
-          </label>
-        </div>
-
         <div class="group">
           <h3>Tejido Sauleda</h3>
           <div class="swatches" id="swatches"></div>
+          <div class="fabmeta" id="fabmeta" style="margin-top:8px"></div>
         </div>
-
-        <div class="fab-card">
-          <div class="name" id="fabName">—</div>
-          <div class="meta" id="fabMeta">100% acrílico tintado en masa · Bobina 120 cm</div>
-          <div class="meta"><b>Garantía 10 años</b> · Hecho en Avinyó, Barcelona</div>
-        </div>
-
         <div class="group">
-          <button class="cta" id="ctaSample">Pedir muestra física gratis</button>
-          <div class="form" id="leadForm">
-            <label for="fNombre" style="font-size:13px;font-weight:700">Nombre</label>
-            <input id="fNombre" placeholder="María López">
-            <label for="fMail" style="font-size:13px;font-weight:700">Email o teléfono</label>
-            <input id="fMail" placeholder="maria@ejemplo.es">
-            <button class="cta" id="ctaSend">Enviar solicitud</button>
+          <h3>Toldo</h3>
+          <div class="row">
+            <button class="btn2 on" id="btnValance">Con faldón</button>
+            <button class="btn2" id="btnReset">Reencajar</button>
           </div>
-          <div class="toast" id="toast">
-            ✓ Solicitud enviada a <b>Toldos García</b> con la referencia del tejido y la captura del diseño. El lead es del toldista — no de Sauleda.
-          </div>
-          <p class="lead-note">Este botón es el corazón del modelo: cada sesión acaba en <b>muestra física + lead cualificado para el toldista</b>. Sauleda vende metros; el toldista gana el cliente.</p>
+        </div>
+        <div class="group">
+          <button class="cta" id="btnCompare" style="margin-bottom:8px">Mantén pulsado: ver sin toldo</button>
+          <button class="cta" id="btnSample2" style="background:transparent;color:var(--red);border:1.5px solid var(--red)">Pedir muestra física gratis</button>
+          <div class="toast" id="toast" style="margin-top:8px">✓ Solicitud enviada a <b>Toldos García</b> con la referencia del tejido y la foto del diseño. El lead es del toldista.</div>
         </div>
       </div>
     </div>
   </div>
 
-  <p class="foot"><b>Cómo leer esta maqueta:</b> es una simulación ilustrativa para las entrevistas de validación y la presentación interna — los tejidos son aproximaciones de color, no reproducciones fieles. En el producto real, la carta completa Sauleda se renderiza desde escaneos calibrados de fábrica, el visualizador se incrusta en la web de cada toldista con un fragmento de código («embed»), y cada diseño compartido lleva la referencia exacta del tejido. Modelo de referencia: Dickson Designer Pro (grupo Glen Raven).</p>
+  <p class="foot"><b>Cómo leer este prototipo:</b> el toldo se dibuja con un motor propio (textura de tejido en perspectiva + pliegues + faldón + sombra proyectada sobre la pared). Sunbrella Shade Studio usa un relleno plano con degradado y una plantilla fija por foto; aquí el toldo se <b>ajusta libremente</b> con las 4 esquinas a cualquier fachada. El salto a fotorrealismo total (render 3D / IA generativa) es ya fase de producto con backend. Cada sesión termina en muestra física + lead para el toldista.</p>
 </div>
 
 <script>
 (function(){
-  const NS = 'http://www.w3.org/2000/svg';
-  // ---------- fabrics ----------
-  const FABRICS = [
-    {n:'Marfil', type:'solid', c:['#EAE2CE']},
-    {n:'Shell-S', type:'solid', c:['#D9CFBF']},
-    {n:'Steel', type:'solid', c:['#75808A']},
-    {n:'Grafito', type:'solid', c:['#3D3D40']},
-    {n:'Indigo-S', type:'solid', c:['#2C3B5E']},
-    {n:'Electric Blue', type:'solid', c:['#1560AE']},
-    {n:'Verde Bosque', type:'solid', c:['#3F5C46']},
-    {n:'Terracota', type:'solid', c:['#B25A40']},
-    {n:'Clásica Roja', type:'stripe', c:['#C8102E','#F2EDE2'], w:[14,14]},
-    {n:'Marina', type:'stripe', c:['#2C3B5E','#F2EDE2'], w:[18,10]},
-    {n:'Mediterránea', type:'stripe', c:['#3F7A5E','#EFE8D5','#C8A23C','#EFE8D5'], w:[16,8,6,8]},
-    {n:'Bretona', type:'stripe', c:['#4B4F55','#E9E4D8'], w:[6,6]},
+  const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+  const cv=$('#cv'), ctx=cv.getContext('2d');
+  let W=900,H=600;
+  let photo=null;            // ImageData de la foto base
+  let comparing=false, showValance=true, drag=null;
+
+  const lerp=(a,b,t)=>[a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t];
+  const mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
+  const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+  const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+
+  // ---- tejidos ----
+  const FABRICS=[
+    {n:'Marfil',type:'solid',c:['#E9E1CD']},
+    {n:'Shell-S',type:'solid',c:['#D6CCBB']},
+    {n:'Steel',type:'solid',c:['#6E7983']},
+    {n:'Grafito',type:'solid',c:['#3A3A3E']},
+    {n:'Indigo-S',type:'solid',c:['#2B3A5C']},
+    {n:'Verde Bosque',type:'solid',c:['#3C5844']},
+    {n:'Terracota',type:'solid',c:['#AE5740']},
+    {n:'Burdeos',type:'solid',c:['#7C2230']},
+    {n:'Clásica Roja',type:'stripe',c:['#C0122C','#EFE9DC'],w:[15,15]},
+    {n:'Marina',type:'stripe',c:['#2B3A5C','#EFE9DC'],w:[18,11]},
+    {n:'Mediterránea',type:'stripe',c:['#3C6E54','#ECE4D2','#B8912F','#ECE4D2'],w:[16,8,6,8]},
+    {n:'Bretona',type:'stripe',c:['#43474D','#E6E0D2'],w:[7,7]},
   ];
-  let fabric = FABRICS[8];
+  let fabric=FABRICS[8];
 
-  const $ = s => document.querySelector(s);
-  const $$ = s => Array.from(document.querySelectorAll(s));
-  const lerp = (a,b,t)=>[a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t];
-  const clear = g => { while(g.firstChild) g.removeChild(g.firstChild); };
-  const poly = (pts, fill) => {
-    const p = document.createElementNS(NS,'path');
-    p.setAttribute('d','M'+pts.map(pt=>pt[0].toFixed(1)+' '+pt[1].toFixed(1)).join(' L ')+' Z');
-    p.setAttribute('fill', fill);
-    return p;
-  };
-
-  // Dibuja tela con rayas EN PERSPECTIVA sobre un cuadrilátero tl,tr,br,bl.
-  // Las rayas siguen la dirección de caída (de borde superior a inferior),
-  // convergiendo/divergiendo con la geometría — como una lona real.
-  function stripedQuad(g, tl, tr, br, bl, f, scale, repeatsOverride){
-    clear(g);
-    scale = scale || 1;
-    if(f.type === 'solid'){
-      g.appendChild(poly([tl,tr,br,bl], f.c[0]));
-      return 0;
-    }
-    const T = f.w.reduce((a,b)=>a+b,0) * scale;
-    const topLen = Math.hypot(tr[0]-tl[0], tr[1]-tl[1]);
-    const botLen = Math.hypot(br[0]-bl[0], br[1]-bl[1]);
-    const repeats = repeatsOverride || Math.max(1, Math.round(((topLen+botLen)/2) / T));
-    // base con el color de fondo de la raya para evitar filos
-    g.appendChild(poly([tl,tr,br,bl], f.c[1] || f.c[0]));
-    let fPrev = 0;
-    for(let r=0; r<repeats; r++){
-      for(let i=0; i<f.w.length; i++){
-        const f2 = Math.min(fPrev + (f.w[i] / (T/scale)) / repeats, 1);
-        const a = lerp(tl,tr,fPrev), b = lerp(tl,tr,f2);
-        const c = lerp(bl,br,f2), d = lerp(bl,br,fPrev);
-        g.appendChild(poly([a,b,c,d], f.c[i % f.c.length]));
-        fPrev = f2;
-      }
-    }
-    return repeats;
+  // ---- quad (4 esquinas en coords canvas) ----
+  // tl,tr = borde pegado a la pared (arriba). bl,br = borde delantero (proyección).
+  let Q;
+  function defaultQuad(){
+    return { tl:[250,225], tr:[650,222], br:[690,320], bl:[210,323] };
   }
 
-  // ---------- swatches ----------
-  const sw = $('#swatches');
-  FABRICS.forEach(f=>{
-    const b = document.createElement('button');
-    b.className = 'swatch'; b.dataset.name = f.n;
-    b.title = f.n; b.setAttribute('aria-label','Tejido '+f.n);
-    if(f.type==='solid'){ b.style.background = f.c[0]; }
-    else{
-      const total = f.w.reduce((a,b2)=>a+b2,0);
-      let stops = [], x = 0;
-      f.w.forEach((w,i)=>{
-        const c = f.c[i % f.c.length];
-        stops.push(`${c} ${x/total*100}%`, `${c} ${(x+w)/total*100}%`); x += w;
-      });
-      b.style.background = `linear-gradient(90deg, ${stops.join(',')})`;
-      b.style.backgroundSize = '24px 100%';
+  // ---- sample facade (fachada realista dibujada) ----
+  function drawSample(){
+    W=900;H=600;cv.width=W;cv.height=H;
+    // cielo
+    let sky=ctx.createLinearGradient(0,0,0,150); sky.addColorStop(0,'#9CC3DC'); sky.addColorStop(1,'#CBE0E9');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,150);
+    // tejado
+    ctx.fillStyle='#5A5E63'; ctx.beginPath(); ctx.moveTo(0,150); ctx.lineTo(W,150); ctx.lineTo(W,120); ctx.lineTo(0,132); ctx.closePath(); ctx.fill();
+    // pared blanca cálida
+    let wall=ctx.createLinearGradient(0,150,0,470); wall.addColorStop(0,'#F0EEE9'); wall.addColorStop(1,'#DED9D0');
+    ctx.fillStyle=wall; ctx.fillRect(0,148,W,322);
+    // rodapié / suelo terraza
+    let ter=ctx.createLinearGradient(0,470,0,600); ter.addColorStop(0,'#C9C0B2'); ter.addColorStop(1,'#B4A997');
+    ctx.fillStyle=ter; ctx.fillRect(0,470,W,130);
+    for(let i=0;i<7;i++){ctx.strokeStyle='rgba(0,0,0,.05)';ctx.beginPath();ctx.moveTo(i*140-40,470);ctx.lineTo(i*140-120,600);ctx.stroke();}
+    ctx.strokeStyle='rgba(0,0,0,.06)';ctx.beginPath();ctx.moveTo(0,470);ctx.lineTo(W,470);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,530);ctx.lineTo(W,530);ctx.stroke();
+    // puerta corredera grande (bajo el toldo)
+    ctx.fillStyle='#3B4A55'; ctx.fillRect(360,330,240,140);
+    ctx.fillStyle='#546673'; ctx.fillRect(366,336,228,128);
+    ctx.fillStyle='rgba(255,255,255,.12)'; ctx.beginPath(); ctx.moveTo(372,340);ctx.lineTo(452,340);ctx.lineTo(392,460);ctx.lineTo(372,460);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='#EDEAE3'; ctx.lineWidth=7; ctx.strokeRect(360,330,240,140);
+    ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(480,330);ctx.lineTo(480,470);ctx.stroke();
+    // ventana a la izquierda
+    ctx.fillStyle='#546673'; ctx.fillRect(150,352,120,96);
+    ctx.strokeStyle='#EDEAE3'; ctx.lineWidth=6; ctx.strokeRect(150,352,120,96);
+    // maceta
+    ctx.fillStyle='#9A6A4A'; ctx.beginPath(); ctx.moveTo(690,470);ctx.lineTo(726,470);ctx.lineTo(720,430);ctx.lineTo(696,430);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='#4E7A42';ctx.lineWidth=5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(708,432);ctx.lineTo(694,394);ctx.moveTo(708,432);ctx.lineTo(722,398);ctx.moveTo(708,432);ctx.lineTo(708,388);ctx.stroke();
+    // silla terraza
+    ctx.fillStyle='#7A7268'; ctx.fillRect(300,478,54,10); ctx.fillRect(304,488,8,34); ctx.fillRect(346,488,8,34); ctx.fillRect(300,452,10,28);
+    photo=ctx.getImageData(0,0,W,H);
+    Q=defaultQuad();
+  }
+
+  function loadImage(img){
+    const maxW=1000; const sc=Math.min(1,maxW/img.naturalWidth);
+    W=Math.round(img.naturalWidth*sc); H=Math.round(img.naturalHeight*sc);
+    cv.width=W;cv.height=H;
+    ctx.drawImage(img,0,0,W,H);
+    photo=ctx.getImageData(0,0,W,H);
+    // quad por defecto: banda superior-central
+    Q={ tl:[W*0.24,H*0.30], tr:[W*0.74,H*0.30], br:[W*0.80,H*0.52], bl:[W*0.18,H*0.52] };
+  }
+
+  // ---- fabric quad fill (canvas) ----
+  function poly(pts){ ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1]); for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0],pts[i][1]); ctx.closePath(); }
+  function clipQuad(tl,tr,br,bl){ poly([tl,tr,br,bl]); ctx.clip(); }
+
+  function fillFabric(tl,tr,br,bl){
+    const f=fabric;
+    if(f.type==='solid'){ poly([tl,tr,br,bl]); ctx.fillStyle=f.c[0]; ctx.fill(); return; }
+    const T=f.w.reduce((a,b)=>a+b,0);
+    const wpx=(dist(tl,tr)+dist(bl,br))/2;
+    const reps=Math.max(3, Math.round(wpx/46));
+    poly([tl,tr,br,bl]); ctx.fillStyle=f.c[1]||f.c[0]; ctx.fill();
+    let fp=0;
+    for(let r=0;r<reps;r++) for(let i=0;i<f.w.length;i++){
+      const f2=Math.min(fp+(f.w[i]/T)/reps,1);
+      const a=lerp(tl,tr,fp), b=lerp(tl,tr,f2), c=lerp(bl,br,f2), d=lerp(bl,br,fp);
+      poly([a,b,c,d]); ctx.fillStyle=f.c[i%f.c.length]; ctx.fill();
+      fp=f2;
     }
-    b.addEventListener('click', ()=>applyFabric(f));
+  }
+
+  // ---- render ----
+  function render(){
+    ctx.putImageData(photo,0,0);
+    if(comparing) return;
+    const {tl,tr,br,bl}=Q;
+    // sombra proyectada bajo el toldo (sobre la pared/terraza)
+    ctx.save();
+    ctx.filter='blur(9px)';
+    const drop=Math.max(18, dist(bl,tl)*0.28);
+    poly([ [bl[0]+8,bl[1]-6], [br[0]-8,br[1]-6], [br[0]-26,br[1]+drop], [bl[0]+26,bl[1]+drop] ]);
+    ctx.fillStyle='rgba(20,18,14,.30)'; ctx.fill();
+    ctx.filter='none'; ctx.restore();
+
+    // tejido
+    fillFabric(tl,tr,br,bl);
+
+    // ---- overlays (recortados al toldo) ----
+    ctx.save(); clipQuad(tl,tr,br,bl);
+    // sombreado base: oscuro pegado a la pared -> claro al frente
+    const mt=mid(tl,tr), mf=mid(bl,br);
+    let g=ctx.createLinearGradient(mt[0],mt[1],mf[0],mf[1]);
+    g.addColorStop(0,'rgba(0,0,0,.30)'); g.addColorStop(.20,'rgba(0,0,0,.06)'); g.addColorStop(.55,'rgba(255,255,255,.10)'); g.addColorStop(1,'rgba(0,0,0,.12)');
+    poly([tl,tr,br,bl]); ctx.fillStyle=g; ctx.fill();
+    // pliegues / varillas: costuras en la dirección de la proyección
+    const wpx=(dist(tl,tr)+dist(bl,br))/2;
+    const panels=Math.max(4, Math.round(wpx/62));
+    for(let i=0;i<=panels;i++){
+      const t=i/panels;
+      const a=lerp(tl,tr,t), b=lerp(bl,br,t);
+      ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]);
+      ctx.strokeStyle='rgba(0,0,0,.14)'; ctx.lineWidth=2; ctx.stroke();
+      // realce claro al lado de cada costura (relieve)
+      const a2=lerp(tl,tr,clamp(t+0.5/panels,0,1)), b2=lerp(bl,br,clamp(t+0.5/panels,0,1));
+      ctx.beginPath(); ctx.moveTo(a2[0],a2[1]); ctx.lineTo(b2[0],b2[1]);
+      ctx.strokeStyle='rgba(255,255,255,.07)'; ctx.lineWidth=6; ctx.stroke();
+    }
+    ctx.restore();
+
+    // faldón (valance) con ondas, mismo tejido
+    if(showValance){
+      const vh=Math.max(14, dist(bl,tl)*0.16);
+      const bl2=[bl[0], bl[1]+vh], br2=[br[0], br[1]+vh];
+      ctx.save();
+      // recorte ondulado del faldón
+      const n=Math.max(5, Math.round(dist(bl,br)/48));
+      ctx.beginPath(); ctx.moveTo(bl[0],bl[1]);
+      for(let i=0;i<n;i++){ const t0=i/n,t1=(i+1)/n; const p1=lerp(bl,br,t1); const cpt=lerp(bl,br,(t0+t1)/2);
+        ctx.quadraticCurveTo(cpt[0], cpt[1]+vh*1.5, p1[0], p1[1]+vh*0.55); }
+      ctx.lineTo(br[0],br[1]); ctx.closePath(); ctx.clip();
+      fillFabric(bl,br,br2,bl2);
+      // sombra del faldón
+      let vg=ctx.createLinearGradient(0,bl[1],0,bl[1]+vh*1.6); vg.addColorStop(0,'rgba(0,0,0,.20)'); vg.addColorStop(1,'rgba(0,0,0,.02)');
+      poly([bl,br,[br[0],br[1]+vh*1.6],[bl[0],bl[1]+vh*1.6]]); ctx.fillStyle=vg; ctx.fill();
+      ctx.restore();
+    }
+
+    // cofre / barra frontal en la pared (borde superior)
+    ctx.save();
+    ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(tl[0],tl[1]); ctx.lineTo(tr[0],tr[1]);
+    ctx.strokeStyle='#31353A'; ctx.lineWidth=Math.max(8,dist(tl,tr)*0.02); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(tl[0],tl[1]-2); ctx.lineTo(tr[0],tr[1]-2);
+    ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.restore();
+    // sombra de contacto bajo el cofre
+    ctx.save(); ctx.filter='blur(3px)';
+    ctx.beginPath(); ctx.moveTo(tl[0],tl[1]+5); ctx.lineTo(tr[0],tr[1]+5);
+    ctx.strokeStyle='rgba(0,0,0,.20)'; ctx.lineWidth=6; ctx.stroke(); ctx.filter='none'; ctx.restore();
+
+    // handles (si no comparando)
+    if(!drag || true){ drawHandles(); }
+  }
+
+  function drawHandles(){
+    ['tl','tr','br','bl'].forEach(k=>{
+      const p=Q[k];
+      ctx.beginPath(); ctx.arc(p[0],p[1],8,0,7); ctx.fillStyle='#fff'; ctx.fill();
+      ctx.lineWidth=3; ctx.strokeStyle='#C8102E'; ctx.stroke();
+    });
+  }
+
+  // ---- interaction ----
+  function toPix(e){ const r=cv.getBoundingClientRect(); return [ (e.clientX-r.left)*(W/r.width), (e.clientY-r.top)*(H/r.height) ]; }
+  function hitHandle(p){ let best=null,bd=18; ['tl','tr','br','bl'].forEach(k=>{ const d=dist(p,Q[k]); if(d<bd){bd=d;best=k;} }); return best; }
+  function insideQuad(p){ // point in quad test
+    const pts=[Q.tl,Q.tr,Q.br,Q.bl]; let inside=false;
+    for(let i=0,j=3;i<4;j=i++){ const xi=pts[i][0],yi=pts[i][1],xj=pts[j][0],yj=pts[j][1];
+      if(((yi>p[1])!=(yj>p[1])) && (p[0]<(xj-xi)*(p[1]-yi)/(yj-yi)+xi)) inside=!inside; } return inside;
+  }
+  cv.addEventListener('pointerdown',e=>{
+    cv.setPointerCapture(e.pointerId);
+    const p=toPix(e); const h=hitHandle(p);
+    if(h){ drag={type:'handle',k:h}; }
+    else if(insideQuad(p)){ drag={type:'move',last:p}; cv.style.cursor='grabbing'; }
+  });
+  cv.addEventListener('pointermove',e=>{
+    if(!drag) return; const p=toPix(e);
+    if(drag.type==='handle'){ Q[drag.k]=[clamp(p[0],0,W),clamp(p[1],0,H)]; }
+    else if(drag.type==='move'){ const dx=p[0]-drag.last[0], dy=p[1]-drag.last[1];
+      ['tl','tr','br','bl'].forEach(k=>{Q[k]=[Q[k][0]+dx,Q[k][1]+dy];}); drag.last=p; }
+    render();
+  });
+  cv.addEventListener('pointerup',()=>{ drag=null; cv.style.cursor='grab'; });
+
+  // ---- swatches ----
+  const sw=$('#swatches');
+  FABRICS.forEach(f=>{
+    const b=document.createElement('button'); b.className='swatch'; b.dataset.n=f.n; b.title=f.n;
+    if(f.type==='solid') b.style.background=f.c[0];
+    else{ const tot=f.w.reduce((a,x)=>a+x,0); let st=[],x=0; f.w.forEach((w,i)=>{const c=f.c[i%f.c.length];st.push(`${c} ${x/tot*100}%`,`${c} ${(x+w)/tot*100}%`);x+=w;}); b.style.background=`linear-gradient(90deg,${st.join(',')})`; }
+    b.onclick=()=>{ fabric=f; $$('.swatch').forEach(s=>s.classList.toggle('on',s.dataset.n===f.n)); fabMeta(); render(); };
     sw.appendChild(b);
   });
+  function fabMeta(){ $('#fabmeta').innerHTML=`<b>${fabric.n}</b> · ${fabric.type==='stripe'?'rayas':'liso'} · 100% acrílico · <span style="color:var(--ok)">muestra física gratis</span>`; }
 
-  function applyFabric(f){
-    fabric = f;
-    $('#fabName').textContent = f.n + (f.type==='stripe' ? ' · rayas' : ' · liso');
-    $$('.swatch').forEach(b => b.classList.toggle('on', b.dataset.name === f.n));
-    render();
-    drawPhotoAwning();
-  }
-
-  // ---------- awning (cofre) ----------
-  let faldon = 'ondas';
-  function quadPath(tl,tr,br,bl){
-    return `M${tl[0]} ${tl[1]} L${tr[0]} ${tr[1]} L${br[0]} ${br[1]} L${bl[0]} ${bl[1]} Z`;
-  }
-  function valancePath(x1, x2, y, h, style){
-    if(style==='no') return '';
-    if(style==='recto') return `M${x1} ${y} L${x2} ${y} L${x2} ${y+h} L${x1} ${y+h} Z`;
-    const n = 8, w = (x2-x1)/n;
-    let d = `M${x1} ${y} L${x2} ${y} L${x2} ${y+h*0.7} `;
-    for(let i=n;i>0;i--){
-      const xa = x1 + w*i, xb = x1 + w*(i-1);
-      d += `Q${(xa+xb)/2} ${y+h*1.45} ${xb} ${y+h*0.7} `;
-    }
-    return d + 'Z';
-  }
-  function drawAwning(){
-    const t = +$('#salida').value / 100;
-    const topY = 192, topL = 296, topR = 604;
-    const botY = topY + 155 * t;
-    const spread = 34 * t;
-    const bL = topL - spread + 2, bR = topR + spread - 2;
-    const tl=[topL,topY], tr=[topR,topY], br=[bR,botY], bl=[bL,botY];
-    const reps = stripedQuad($('#awnFabricG'), tl, tr, br, bl, fabric);
-    $('#awnWeave').setAttribute('d', quadPath(tl,tr,br,bl));
-    $('#awnShade').setAttribute('d', quadPath(tl,tr,br,bl));
-    // costuras de paños (bobina ~120cm → 2 costuras en 4m)
-    const seams = $('#awnSeams'); clear(seams);
-    [1/3, 2/3].forEach(fx=>{
-      const a = lerp(tl,tr,fx), b = lerp(bl,br,fx);
-      const ln = document.createElementNS(NS,'line');
-      ln.setAttribute('x1',a[0]); ln.setAttribute('y1',a[1]);
-      ln.setAttribute('x2',b[0]); ln.setAttribute('y2',b[1]);
-      ln.setAttribute('stroke','#000000'); ln.setAttribute('stroke-opacity','.13'); ln.setAttribute('stroke-width','1.6');
-      seams.appendChild(ln);
-    });
-    $('#awnArmL').setAttribute('x2', bL + 6); $('#awnArmL').setAttribute('y2', botY);
-    $('#awnArmR').setAttribute('x2', bR - 6); $('#awnArmR').setAttribute('y2', botY);
-    // faldón con rayas continuas, recortado por las ondas
-    const vh = 34;
-    const vPath = valancePath(bL, bR, botY, vh, faldon);
-    $('#valClipPath').setAttribute('d', vPath);
-    $('#valOutline').setAttribute('d', vPath);
-    $('#valShadePath').setAttribute('d', vPath ? `M${bL} ${botY} L${bR} ${botY} L${bR} ${botY+vh*1.5} L${bL} ${botY+vh*1.5} Z` : '');
-    const vg = $('#valG');
-    if(vPath){
-      stripedQuad(vg, bl, br, [bR,botY+vh*1.5], [bL,botY+vh*1.5], fabric, 1, reps);
-    } else clear(vg);
-    // sombras
-    const sh = $('#awnShadow');
-    sh.setAttribute('rx', 150 + 130*t); sh.setAttribute('opacity', .16 + .22*t);
-    $('#awnWallShadow').setAttribute('d',
-      `M${topL+18} ${botY+vh*0.9} L${topR-18} ${botY+vh*0.9} L${topR-40} ${botY+vh*0.9+46*t} L${topL+40} ${botY+vh*0.9+46*t} Z`);
-    $('#salidaVal').textContent = Math.round(150 + 200*t) + ' cm';
-  }
-
-  // ---------- pergola ----------
-  function drawPergola(){
-    const x1=176, x2=724, y=190, sag=54, n=7, w=(x2-x1)/n;
-    let outline='';
-    for(let i=0;i<n;i++){
-      const xa=x1+i*w, xb=xa+w;
-      outline += `M${xa} ${y} L${xb} ${y} Q${(xa+xb)/2} ${y+sag} ${xa} ${y} Z `;
-    }
-    $('#pgClipPath').setAttribute('d', outline);
-    $('#pgOutline').setAttribute('d', outline);
-    $('#pgShade').setAttribute('d', `M${x1} ${y} L${x2} ${y} L${x2} ${y+sag} L${x1} ${y+sag} Z`);
-    // rayas continuas a lo largo, recortadas por los pliegues
-    stripedQuad($('#pgCanopyG'), [x1,y], [x2,y], [x2,y+sag], [x1,y+sag], fabric);
-    // varillas entre pliegues
-    const rods = $('#pgRods'); clear(rods);
-    for(let i=0;i<=n;i++){
-      const x = x1+i*w;
-      const ln = document.createElementNS(NS,'line');
-      ln.setAttribute('x1',x); ln.setAttribute('y1',y-3);
-      ln.setAttribute('x2',x); ln.setAttribute('y2',y+7);
-      ln.setAttribute('stroke','#3C4147'); ln.setAttribute('stroke-width','4'); ln.setAttribute('stroke-linecap','round');
-      rods.appendChild(ln);
-    }
-  }
-
-  // ---------- umbrella + cushions ----------
-  function drawUmbrella(){
-    const cx=330, apexY=182, rimY=300, half=185, n=6, scallop=20;
-    // contorno del canopy con festones
-    let outline = `M${cx} ${apexY} L${cx-half} ${rimY} `;
-    for(let i=0;i<n;i++){
-      const xa = cx-half+(2*half)*(i/n), xb = cx-half+(2*half)*((i+1)/n);
-      outline += `Q${(xa+xb)/2} ${rimY+scallop} ${xb} ${rimY} `;
-    }
-    outline += 'Z';
-    $('#umbClipPath').setAttribute('d', outline);
-    $('#umbOutline').setAttribute('d', outline);
-    $('#umbShadePath').setAttribute('d', `M${cx-half-4} ${apexY-6} L${cx+half+4} ${apexY-6} L${cx+half+4} ${rimY+scallop+4} L${cx-half-4} ${rimY+scallop+4} Z`);
-    // rayas radiales: cuñas del ápice al borde, recortadas por el contorno
-    const g = $('#umbCanopyG'); clear(g);
-    if(fabric.type==='solid'){
-      g.appendChild(poly([[cx-half-4,apexY-6],[cx+half+4,apexY-6],[cx+half+4,rimY+scallop+4],[cx-half-4,rimY+scallop+4]], fabric.c[0]));
-    } else {
-      const T = fabric.w.reduce((a,b)=>a+b,0);
-      const rimLen = 2*half;
-      const repeats = Math.max(2, Math.round(rimLen / (T*1.6)));
-      g.appendChild(poly([[cx-half-4,apexY-6],[cx+half+4,apexY-6],[cx+half+4,rimY+scallop+4],[cx-half-4,rimY+scallop+4]], fabric.c[1]||fabric.c[0]));
-      let fr = 0;
-      const p1=[cx-half, rimY+scallop+2], p2=[cx+half, rimY+scallop+2];
-      for(let r=0;r<repeats;r++){
-        for(let i=0;i<fabric.w.length;i++){
-          const f2 = fr + (fabric.w[i]/T)/repeats;
-          const a = lerp(p1,p2,fr), b = lerp(p1,p2,Math.min(f2,1));
-          g.appendChild(poly([[cx,apexY],a,b], fabric.c[i%fabric.c.length]));
-          fr = Math.min(f2,1);
-        }
-      }
-    }
-    // varillas
-    const ribs = $('#umbRibs'); clear(ribs);
-    for(let i=0;i<=n;i++){
-      const x = cx-half+(2*half)*(i/n);
-      const ln = document.createElementNS(NS,'line');
-      ln.setAttribute('x1',cx); ln.setAttribute('y1',apexY);
-      ln.setAttribute('x2',x); ln.setAttribute('y2',rimY);
-      ln.setAttribute('stroke','#00000022'); ln.setAttribute('stroke-width','2');
-      ribs.appendChild(ln);
-    }
-    // cojines de la tumbona (rayas a lo largo del cojín, escala reducida)
-    const seat = $('#seatCushionG');
-    stripedQuad(seat, [66,432],[306,432],[310,462],[62,462], fabric, .55);
-    const seatShade = poly([[66,432],[306,432],[310,462],[62,462]], 'url(#fabShade)');
-    seat.appendChild(seatShade);
-    const back = $('#backCushionG');
-    stripedQuad(back, [30,354],[76,332],[104,414],[52,438], fabric, .55);
-    back.appendChild(poly([[30,354],[76,332],[104,414],[52,438]], 'url(#fabShade)'));
-  }
-
-  // ---------- photo awning ----------
-  function drawPhotoAwning(){
-    const tl=[18,24], tr=[382,24], br=[400,142], bl=[0,142], vh=22;
-    const reps = stripedQuad($('#pAwnG'), tl,tr,br,bl, fabric);
-    $('#pAwnShade').setAttribute('d', quadPath(tl,tr,br,bl));
-    const vPath = valancePath(0,400,142,vh,faldon);
-    $('#pValClipPath').setAttribute('d', vPath);
-    $('#pValOutline').setAttribute('d', vPath);
-    const vg = $('#pValG');
-    if(vPath) stripedQuad(vg, bl, br, [400,142+vh*1.5], [0,142+vh*1.5], fabric, 1, reps);
-    else clear(vg);
-  }
-
-  // ---------- modes ----------
-  let mode='cofre', scene='demo';
-  function render(){
-    $('#scCofre').classList.toggle('hidden', mode!=='cofre');
-    $('#scPergola').classList.toggle('hidden', mode!=='pergola');
-    $('#scMueble').classList.toggle('hidden', mode!=='mueble');
-    $('#grpSalida').classList.toggle('hidden', !(mode==='cofre' && scene==='demo'));
-    $('#grpTam').classList.toggle('hidden', scene!=='photo');
-    $('#scene').classList.toggle('hidden', scene==='photo');
-    $('#photoStage').classList.toggle('hidden', scene!=='photo');
-    if(mode==='cofre') drawAwning();
-    if(mode==='pergola') drawPergola();
-    if(mode==='mueble') drawUmbrella();
-  }
-
-  $$('button[data-mode]').forEach(b=>b.addEventListener('click',()=>{
-    $$('button[data-mode]').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on'); mode=b.dataset.mode;
-    render();
-  }));
-
-  $$('button[data-scene]').forEach(b=>b.addEventListener('click',()=>{
-    if(b.dataset.scene==='photo' && !$('#photoImg').src){
-      $('#photoInput').click();
-      return;
-    }
-    setScene(b.dataset.scene);
-  }));
-  function setScene(s){
-    scene=s;
-    $$('button[data-scene]').forEach(x=>x.classList.toggle('on', x.dataset.scene===s));
-    render();
-    if(s==='photo') drawPhotoAwning();
-  }
-
-  $('#photoInput').addEventListener('change', e=>{
-    const f=e.target.files[0]; if(!f) return;
-    const url=URL.createObjectURL(f);
-    $('#photoImg').src=url;
-    setScene('photo');
-  });
-
-  // photo awning drag + size
-  const pa=$('#photoAwning');
-  let drag=null;
-  pa.addEventListener('pointerdown', e=>{
-    drag={x:e.clientX,y:e.clientY,l:pa.offsetLeft,t:pa.offsetTop};
-    pa.setPointerCapture(e.pointerId); pa.style.cursor='grabbing';
-  });
-  pa.addEventListener('pointermove', e=>{
-    if(!drag) return;
-    pa.style.left=(drag.l+e.clientX-drag.x)+'px';
-    pa.style.top=(drag.t+e.clientY-drag.y)+'px';
-  });
-  pa.addEventListener('pointerup', ()=>{drag=null; pa.style.cursor='grab';});
-  $('#tam').addEventListener('input', e=>{
-    pa.style.width=e.target.value+'%';
-    $('#tamVal').textContent=e.target.value+'%';
-  });
-
-  // ---------- controls ----------
-  $('#salida').addEventListener('input', drawAwning);
-  $$('#segFaldon button').forEach(b=>b.addEventListener('click',()=>{
-    $$('#segFaldon button').forEach(x=>x.classList.remove('on'));
-    b.classList.add('on'); faldon=b.dataset.faldon;
-    drawAwning(); drawPhotoAwning();
-  }));
-
-  // ---------- lead form ----------
-  $('#ctaSample').addEventListener('click',()=>{
-    $('#leadForm').classList.toggle('open');
-    $('#toast').classList.remove('show');
-  });
-  $('#ctaSend').addEventListener('click',()=>{
-    $('#leadForm').classList.remove('open');
-    $('#toast').classList.add('show');
-  });
+  // ---- controls ----
+  $('#btnSample').onclick=()=>{ setSrc('sample'); drawSample(); render(); };
+  $('#btnUpload').onclick=()=>$('#fileInput').click();
+  $('#fileInput').onchange=e=>{ const f=e.target.files[0]; if(!f)return; setSrc('upload'); const img=new Image(); img.onload=()=>{loadImage(img);render();}; img.src=URL.createObjectURL(f); };
+  function setSrc(w){ $('#btnSample').classList.toggle('on',w==='sample'); $('#btnUpload').classList.toggle('on',w==='upload'); }
+  $('#btnValance').onclick=()=>{ showValance=!showValance; $('#btnValance').classList.toggle('on',showValance); render(); };
+  $('#btnReset').onclick=()=>{ Q = photo && W!==900 ? { tl:[W*0.24,H*0.30],tr:[W*0.74,H*0.30],br:[W*0.80,H*0.52],bl:[W*0.18,H*0.52] } : defaultQuad(); render(); };
+  const cmp=$('#btnCompare'); const on=()=>{comparing=true;render();}, off=()=>{comparing=false;render();};
+  cmp.addEventListener('pointerdown',on); cmp.addEventListener('pointerup',off); cmp.addEventListener('pointerleave',off);
+  $('#btnSample2').onclick=()=>{ $('#toast').classList.add('show'); };
 
   // init
-  applyFabric(fabric);
-  drawPhotoAwning();
+  $$('.swatch')[8].classList.add('on');
+  fabMeta(); drawSample(); render();
 })();
 </script>
